@@ -33,7 +33,7 @@
         size:dp(50),dp(185)
         radius:dp(10)
         md_bg_color:0,0,0,0
-        on_press:app.apply_theme(root.text.lower())
+        on_press:app.apply_theme_openbox(root.text.lower())
 
 
 <ThemeViewOnline>:
@@ -63,6 +63,7 @@
         MDIconButton:
             icon:"download"
             pos_hint:{"center_y":0.12,"center_x":0.85}
+            on_press:app.open_theme_installer(root)
 
 MDBottomNavigation:
     font_name:app.medium_font
@@ -149,6 +150,7 @@ MDBottomNavigation:
                 halign:"center"
             MDScrollView:
                 size_hint_y:0.85
+                id:openbox_scrollview
                 MDBoxLayout:
                     md_bg_color:app.theme_cls.bg_normal
                     id:local_themes
