@@ -18,4 +18,4 @@ Some screenshots of initial release:
 
 ## Contributing
 
-If you would like to contribute to this repository, for example creating a theme, please refer to our [Contribution Guide](https://github.com/archcraft-os/archcraft-theme-manager/CONTRIBUTING.MD).
+If you would like to contribute to this repository, for example creating a theme, please refer to our [Contribution Guide](https://github.com/archcraft-os/archcraft-theme-manager/CONTRIBUTING.md).
