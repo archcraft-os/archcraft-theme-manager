@@ -8,15 +8,18 @@ ModalView:
 			pos_hint:{"center_x":0.7,"center_y":0.2}
 			radius:dp(10)
 			font_name:app.regular_font
+	        ripple_scale:0
 		MDFlatButton:
 			md_bg_color:0,0,0,0
 			line_color:app.theme_cls.primary_light
-			text:"Cancel"	
+			text:"Cancel" 
 			size_hint:0.3,0.07
 			pos_hint:{"center_x":0.3,"center_y":0.2}
 			radius:dp(10)
 			font_name:app.regular_font
 			line_width:dp(1)
+	        ripple_scale:0
+	        on_press:root.close()
 		MDLabel:
 			id:theme_name
 			text:"Dark"
@@ -31,8 +34,4 @@ ModalView:
 			font_size:"20sp"
 			halign:"center"
 			pos_hint:{"center_x":0.5,"center_y":0.35}
-		Scatter:
-			size_hint:0.5,0.5
-			pos_hint:{"center_x":0.5,"center_y":0.7}
-			Image:
-				source:"/home/tdynamos/atm/default_previews/adaptive.png"
+

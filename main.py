@@ -1,5 +1,7 @@
 #!/usr/bin/python3
-
+from kivy.config import Config
+Config.set("graphics", "height", "650")
+Config.set("graphics", "width", "380")
 from kivy.lang import Builder
 from kivymd.app import MDApp
 from kivymd.uix.anchorlayout import MDAnchorLayout
@@ -44,7 +46,7 @@ class ThemeManager(MDApp):
         self.MainUI = Builder.load_file("main.kv")
         self.InstallView = Builder.load_file("modal_views/install_theme.kv")
         from kivy.core.window import Window
-        Window.size = [400,650]
+        Window.size = [380,650]
         return self.MainUI
 
     def on_start(self):
@@ -52,7 +54,13 @@ class ThemeManager(MDApp):
         self.load_popular()
         self.load_online()
 
+    def refresh(self,*largs):
+        self.on_start()
+        Clock.schedule_once(lambda arg: self.root.ids.refresh_layout.refresh_done(),2)
+
     def load_popular(self):
+        if len(self.root.ids.online_theme_top.children) > 4:
+            self.root.ids.online_theme_top.clear_widgets()
         for theme in self.themes["Popular"].keys():
             Widget = ThemeViewOnline()
             Widget.source = self.themes["Popular"][theme]["thumbnail"]
@@ -60,6 +68,10 @@ class ThemeManager(MDApp):
             self.root.ids.online_theme_top.add_widget(Widget)
 
     def load_online(self):
+        if len(self.root.ids.online_theme_lower.children) > 0:
+            for child in self.root.ids.online_theme_lower.children:
+                if len(self.root.ids.online_theme_lower.children) > 4:
+                    self.root.ids.online_theme_lower.remove_widget(child)
         for theme in self.themes["Online"].keys():
             Widget = ThemeViewOnline()
             Widget.source = self.themes["Online"][theme]["thumbnail"]

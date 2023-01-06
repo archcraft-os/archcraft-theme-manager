@@ -74,6 +74,7 @@ MDBottomNavigation:
         md_bg_color:app.theme_cls.bg_normal
         icon:"earth"
         text:"Online Themes"
+        id:ScreenOnline
         MDLabel:
             text:"Hi, {}".format(app.name_linux)
             font_name:app.bold_font
@@ -90,8 +91,11 @@ MDBottomNavigation:
             
         AnchorLayout:
             anchor_y:"bottom"
-            MDScrollView:
+            MDScrollViewRefreshLayout:
+                id:refresh_layout
+                root_layout: ScreenOnline
                 size_hint_y:0.8
+                refresh_callback:app.refresh
                 MDBoxLayout:
                     id:online_theme_lower
                     adaptive_height:True

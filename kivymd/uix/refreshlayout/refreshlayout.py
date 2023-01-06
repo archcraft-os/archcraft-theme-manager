@@ -112,7 +112,7 @@ from kivy.lang import Builder
 from kivy.metrics import dp
 from kivy.properties import ColorProperty, NumericProperty, ObjectProperty
 from kivy.uix.floatlayout import FloatLayout
-
+from kivy.uix.anchorlayout import AnchorLayout
 from kivymd import uix_path
 from kivymd.theming import ThemableBehavior
 from kivymd.uix.scrollview import MDScrollView
@@ -209,7 +209,7 @@ class RefreshSpinner(ThemableBehavior, FloatLayout):
     def start_anim_spinner(self) -> None:
         spinner = self.ids.body_spinner
         Animation(
-            y=spinner.y - self.theme_cls.standard_increment * 2 + dp(10),
+            y=spinner.y - self.theme_cls.standard_increment * 4 + dp(10),
             d=0.8,
             t="out_elastic",
         ).start(spinner)
@@ -219,6 +219,7 @@ class RefreshSpinner(ThemableBehavior, FloatLayout):
         anim = Animation(y=Window.height, d=0.8, t="out_elastic")
         anim.bind(on_complete=self.set_spinner)
         anim.start(spinner)
+        print("Hindiding")
 
     def set_spinner(self, *args) -> None:
         body_spinner = self.ids.body_spinner
