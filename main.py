@@ -2,6 +2,7 @@
 from kivy.config import Config
 Config.set("graphics", "height", "650")
 Config.set("graphics", "width", "380")
+Config.set("input","%(name)s","probesysfs,provider=hidinput")
 from kivy.lang import Builder
 from kivymd.app import MDApp
 from kivymd.uix.anchorlayout import MDAnchorLayout
