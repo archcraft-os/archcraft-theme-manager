@@ -19,8 +19,12 @@ ModalView:
 			font_name:app.regular_font
 			line_width:dp(1)
 	        ripple_scale:0
-	        on_press:root.close()
-		MDLabel:
+	        on_press:root.dismiss()
+        AsyncImage:
+            id:image
+            source:"./default_previews/easy.png"
+            pos_hint:{"center_y":0.7}
+        MDLabel:
 			id:theme_name
 			text:"Dark"
 			font_name:app.bold_font
@@ -34,4 +38,12 @@ ModalView:
 			font_size:"20sp"
 			halign:"center"
 			pos_hint:{"center_x":0.5,"center_y":0.35}
+		MDLabel:
+			id:file_size
+			text:"20mb"
+			font_name:app.medium_font
+			font_size:"20sp"
+			halign:"center"
+			pos_hint:{"center_x":0.85,"center_y":0.4}
+
 

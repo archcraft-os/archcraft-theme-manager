@@ -66,6 +66,7 @@ class ThemeManager(MDApp):
             Widget = ThemeViewOnline()
             Widget.source = self.themes["Popular"][theme]["thumbnail"]
             Widget.text = "{} by {}".format(theme,self.themes["Popular"][theme]["maker"])
+            Widget.file_size = self.themes["Popular"][theme]["file_size"]
             self.root.ids.online_theme_top.add_widget(Widget)
 
     def load_online(self):
@@ -77,6 +78,7 @@ class ThemeManager(MDApp):
             Widget = ThemeViewOnline()
             Widget.source = self.themes["Online"][theme]["thumbnail"]
             Widget.text = "{} by {}".format(theme,self.themes["Online"][theme]["maker"])
+            Widget.file_size = self.themes["Online"][theme]["file_size"]
             self.root.ids.online_theme_lower.add_widget(Widget)
 
     def load_local_themes(self,*args):
@@ -114,6 +116,8 @@ class ThemeManager(MDApp):
     def open_theme_installer(self,root):
         self.InstallView.ids.theme_name.text = root.text.split(" by ")[0]
         self.InstallView.ids.dev_name.text = root.text.split(" by ")[-1]
+        self.InstallView.ids.file_size.text = root.file_size
+        self.InstallView.ids.image.source = root.source
         self.InstallView.open() 
 
     def apply_theme_openbox(self,theme):
@@ -147,6 +151,26 @@ class ThemeManager(MDApp):
                 if os.path.isdir(self.openbox_theme_dir+file):
                     folders.append(file)
         return folders
+
+    def download_file(self,url):
+        if os.path.isdir("/home/{}/.cache/atm".format(self.name_linux)) == False:
+            os.system("mkdir ~/.cache/atm/")
+        os.system("rm -rf ~/.cache/atm/*") # clear previous files
+        # This most common file name finding algorithm
+        filename = "/home/{}/.cache/atm/{}".format(self.name_linux,url.split("/")[-1])
+        if os.system(which("wget")+" "+url+" -O {}".format(filename)) == 0:
+            return filename
+        else:
+            return None
+
+    def install_file(self,filename):
+        if os.system("cd {} && {} -xvf {} ".format("/".join(filename.split("/")[:-1]),which("tar"),filename)) != 0:
+            return None
+        for folder in os.listdir("/".join(filename.split("/")[-1])):
+            if os.path.isdir(folder):
+                if os.system(which("bash")+" /".join(filename.split("/")[-1])+"/"+folder+"/install.sh") == 0:
+                    return True
+        return None
 
 
 ThemeManager().run()
