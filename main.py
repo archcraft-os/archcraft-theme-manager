@@ -179,7 +179,7 @@ class ThemeManager(MDApp):
             _thread.start_new_thread(lambda x,y:self.install_file(filename),("",""))
         else:
             self.set_value(self.DynamicView.ids.text_main,"Download Failed")
-            Clock.schedule_once(lambda x,y : self.DynamicView.dismiss(),("",""),1)
+            Clock.schedule_once(lambda x : self.DynamicView.dismiss(),1)
             self.send_notification("Theme installation failed {}".format(self.theme_name))
 
     # the above and below functions are kinda mess 
