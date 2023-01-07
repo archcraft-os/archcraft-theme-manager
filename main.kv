@@ -41,6 +41,7 @@
     size:dp(50),dp(180)
     source:""
     text:""
+    installed:False
     FitImage:
         size_hint:0.85,None
         size:dp(50),dp(180)
@@ -58,7 +59,8 @@
             halign:"center"
             font_name:app.regular_font
         MDIconButton:
-            icon:"chevron-right"
+            icon:"check"
+            opacity:0 if root.installed == False else 1
             pos_hint:{"center_y":0.12,"center_x":0.75}
         MDIconButton:
             icon:"download"
@@ -92,10 +94,10 @@ MDBottomNavigation:
         AnchorLayout:
             anchor_y:"bottom"
             MDScrollViewRefreshLayout:
-                id:refresh_layout
+                id:refresh_layout_online
                 root_layout: ScreenOnline
                 size_hint_y:0.8
-                refresh_callback:app.refresh
+                refresh_callback:app.refresh_online
                 MDBoxLayout:
                     id:online_theme_lower
                     adaptive_height:True
@@ -140,6 +142,7 @@ MDBottomNavigation:
         text:"My Themes"
         md_bg_color:app.theme_cls.bg_normal
         icon:"account"
+        id:ScreenOffline
         MDLabel:
             text:"Local Themes"
             font_name:app.bold_font
@@ -152,8 +155,10 @@ MDBottomNavigation:
                 font_name:app.medium_font
                 font_size:"30sp"
                 halign:"center"
-            MDScrollView:
+            MDScrollViewRefreshLayout:
+                root_layout: ScreenOffline
                 size_hint_y:0.85
+                refresh_callback:app.refresh_offline
                 id:openbox_scrollview
                 MDBoxLayout:
                     md_bg_color:app.theme_cls.bg_normal

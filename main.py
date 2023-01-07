@@ -46,6 +46,7 @@ class ThemeManager(MDApp):
         self.theme_cls.material_style = "M3"
         self.MainUI = Builder.load_file("main.kv")
         self.InstallView = Builder.load_file("modal_views/install_theme.kv")
+        self.DynamicView = Builder.load_file("modal_views/dynamic_view.kv")
         from kivy.core.window import Window
         Window.size = [380,650]
         return self.MainUI
@@ -55,9 +56,13 @@ class ThemeManager(MDApp):
         self.load_popular()
         self.load_online()
 
-    def refresh(self,*largs):
-        self.on_start()
-        Clock.schedule_once(lambda arg: self.root.ids.refresh_layout.refresh_done(),2)
+    def refresh_offline(self,*largs):
+        self.load_local_themes()
+        Clock.schedule_once(lambda arg: self.root.ids.openbox_scrollview.refresh_done(),2)
+    def refresh_online(self,*largs):
+        self.load_popular()
+        self.load_online()
+        Clock.schedule_once(lambda arg: self.root.ids.refresh_layout_online.refresh_done(),2)
 
     def load_popular(self):
         if len(self.root.ids.online_theme_top.children) > 4:
@@ -67,6 +72,9 @@ class ThemeManager(MDApp):
             Widget.source = self.themes["Popular"][theme]["thumbnail"]
             Widget.text = "{} by {}".format(theme,self.themes["Popular"][theme]["maker"])
             Widget.file_size = self.themes["Popular"][theme]["file_size"]
+            Widget.download_url = self.themes["Popular"][theme]["downloadurl"]
+            if theme in self.get_all_openbox_themes():
+                Widget.installed = True
             self.root.ids.online_theme_top.add_widget(Widget)
 
     def load_online(self):
@@ -79,6 +87,9 @@ class ThemeManager(MDApp):
             Widget.source = self.themes["Online"][theme]["thumbnail"]
             Widget.text = "{} by {}".format(theme,self.themes["Online"][theme]["maker"])
             Widget.file_size = self.themes["Online"][theme]["file_size"]
+            Widget.download_url = self.themes["Online"][theme]["downloadurl"]
+            if theme in self.get_all_openbox_themes():
+                Widget.installed = True
             self.root.ids.online_theme_lower.add_widget(Widget)
 
     def load_local_themes(self,*args):
@@ -95,7 +106,7 @@ class ThemeManager(MDApp):
         if os.path.isfile("./default_previews/{}.png".format(current_theme)):
             CurrentWidget.source = "./default_previews/{}.png".format(current_theme)
         else:
-            self.openbox_theme_dir+f"/{current_theme}/preview.png"
+            self.openbox_theme_dir+f"{current_theme}/preview.png"
         CurrentWidget.text = current_theme.capitalize()
         CurrentWidget.children[0].style = "outlined"
         CurrentWidget.children[0].line_color = self.theme_cls.accent_light
@@ -109,7 +120,7 @@ class ThemeManager(MDApp):
             if os.path.isfile("./default_previews/{}.png".format(theme)):
                 TestWidget.source = "./default_previews/{}.png".format(theme) 
             else:
-                TestWidget.source = self.openbox_theme_dir+f"/{theme}/preview.png"
+                TestWidget.source = self.openbox_theme_dir+f"{theme}/preview.png"
             TestWidget.text = theme.capitalize()
             self.root.ids.local_themes.add_widget(TestWidget)
 
@@ -118,6 +129,8 @@ class ThemeManager(MDApp):
         self.InstallView.ids.dev_name.text = root.text.split(" by ")[-1]
         self.InstallView.ids.file_size.text = root.file_size
         self.InstallView.ids.image.source = root.source
+        self.InstallView.ids.install_button.url = root.download_url
+        self.InstallView.ids.install_button.name = root.text.split(" by ")[0]
         self.InstallView.open() 
 
     def apply_theme_openbox(self,theme):
@@ -152,25 +165,54 @@ class ThemeManager(MDApp):
                     folders.append(file)
         return folders
 
+    def send_notification(self,text):
+        os.system("{} -a 'Archcraft Theme Manager' -i logo.png '{}'".format(which("notify-send"),text))
+
     def download_file(self,url):
+        self.set_value(self.DynamicView.ids.text_main,"Downloding ...")
         if os.path.isdir("/home/{}/.cache/atm".format(self.name_linux)) == False:
             os.system("mkdir ~/.cache/atm/")
         os.system("rm -rf ~/.cache/atm/*") # clear previous files
         # This most common file name finding algorithm
         filename = "/home/{}/.cache/atm/{}".format(self.name_linux,url.split("/")[-1])
         if os.system(which("wget")+" "+url+" -O {}".format(filename)) == 0:
-            return filename
+            _thread.start_new_thread(lambda x,y:self.install_file(filename),("",""))
         else:
-            return None
+            self.set_value(self.DynamicView.ids.text_main,"Download Failed")
+            Clock.schedule_once(lambda x,y : self.DynamicView.dismiss(),("",""),1)
+            self.send_notification("Theme installation failed {}".format(self.theme_name))
+
+    # the above and below functions are kinda mess 
+    # but they work as intended
 
     def install_file(self,filename):
+        self.set_value(self.DynamicView.ids.text_main,"Installing ...")
         if os.system("cd {} && {} -xvf {} ".format("/".join(filename.split("/")[:-1]),which("tar"),filename)) != 0:
-            return None
-        for folder in os.listdir("/".join(filename.split("/")[-1])):
-            if os.path.isdir(folder):
-                if os.system(which("bash")+" /".join(filename.split("/")[-1])+"/"+folder+"/install.sh") == 0:
-                    return True
-        return None
+            return 
+        for folder in os.listdir("/".join(filename.split("/")[:-1])):
+            if os.path.isdir("/".join(filename.split("/")[:-1])+"/"+folder):
+                command = "cd {} && ".format("/".join(filename.split("/")[:-1])+"/"+folder)+which("bash")+" "+"/".join(filename.split("/")[:-1])+"/"+folder+"/install.sh"
+                if os.system(command) == 0:
+                    preview = "/".join(filename.split("/")[:-1])+"/"+folder+"/preview.png"
+                    if os.path.isfile(preview):
+                        os.system("mv {} {}".format(preview,self.openbox_theme_dir+self.theme_name+"/preview.png"))
+                self.set_value(self.DynamicView.ids.text_main,"Done!")
+                Clock.schedule_once(lambda x : self.DynamicView.dismiss(),1)
+                
+                self.send_notification("Theme installation success {}".format(self.theme_name))
+                return 
+        self.set_value(self.DynamicView.ids.text_main,"Failed")
+        self.send_notification("Theme installation failed {}".format(self.theme_name))
+
+    def set_value(self,key,value):
+        def run(arg):
+            key.text = value
+        Clock.schedule_once(run)
+
+    def install_theme(self,url,name):
+        self.DynamicView.open()
+        self.theme_name = name
+        _thread.start_new_thread(lambda x,y: self.download_file(url),("",""))
 
 
 ThemeManager().run()
