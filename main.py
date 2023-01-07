@@ -195,7 +195,7 @@ class ThemeManager(MDApp):
                 if os.system(command) == 0:
                     preview = "/".join(filename.split("/")[:-1])+"/"+folder+"/preview.png"
                     if os.path.isfile(preview):
-                        os.system("mv {} {}".format(preview,self.openbox_theme_dir+self.theme_name+"/preview.png"))
+                        os.system("mv {} {}".format(preview,self.openbox_theme_dir+self.theme_name.lower()+"/preview.png"))
                 self.set_value(self.DynamicView.ids.text_main,"Done!")
                 Clock.schedule_once(lambda x : self.DynamicView.dismiss(),1)
                 
