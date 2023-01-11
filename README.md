@@ -1,6 +1,13 @@
-# Archcraft Themes Manager
+<p align="center">
+<a href="https://archcraft.io"><img src="logo.png" height="128" width="128" alt="Archcraft"></a>
+</p>
 
-Archcraft Themes Manager (in development)
+<p align="center">
+<b>Archcraft Theme Manager</b>
+</p>
+
+
+Archcraft Theme Manager (in development)
 
 
 ## Installation
@@ -19,3 +26,4 @@ Some screenshots of initial release:
 ## Contributing
 
 If you would like to contribute to this repository, for example creating a theme, please refer to our [Contribution Guide](https://github.com/archcraft-os/archcraft-theme-manager/blob/main/CONTRIBUTING.md).
+
