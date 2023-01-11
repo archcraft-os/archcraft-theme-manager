@@ -16,7 +16,7 @@ import json
 import os
 import _thread
 
-Loader.loading_image = "logo.gif"
+Loader.loading_image = "./assets/loading.png"
 
 class ThemeView(MDAnchorLayout):
     pass
@@ -73,7 +73,7 @@ class ThemeManager(MDApp):
             Widget.text = "{} by {}".format(theme,self.themes["Popular"][theme]["maker"])
             Widget.file_size = self.themes["Popular"][theme]["file_size"]
             Widget.download_url = self.themes["Popular"][theme]["downloadurl"]
-            if theme in self.get_all_openbox_themes():
+            if theme.lower() in self.get_all_openbox_themes():
                 Widget.installed = True
             self.root.ids.online_theme_top.add_widget(Widget)
 
@@ -88,14 +88,14 @@ class ThemeManager(MDApp):
             Widget.text = "{} by {}".format(theme,self.themes["Online"][theme]["maker"])
             Widget.file_size = self.themes["Online"][theme]["file_size"]
             Widget.download_url = self.themes["Online"][theme]["downloadurl"]
-            if theme in self.get_all_openbox_themes():
+            if theme.lower() in self.get_all_openbox_themes():
                 Widget.installed = True
             self.root.ids.online_theme_lower.add_widget(Widget)
 
     def load_local_themes(self,*args):
         Animation(opacity=0,d=0.2).start(self.root.ids.local_themes)
         Clock.schedule_once(self.add_openbox_local_theme_widget,0.5)
-        Clock.schedule_once(lambda arg : Animation(opacity=1,d=0.2).start(self.root.ids.local_themes),0.7)
+        Clock.schedule_once(lambda arg : Animation(opacity=1,d=0.2).start(self.root.ids.local_themes),0.8)
 
     def add_openbox_local_theme_widget(self,arg):
         self.root.ids.local_themes.clear_widgets()
