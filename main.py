@@ -133,6 +133,9 @@ class ThemeManager(MDApp):
         self.InstallView.ids.install_button.name = root.text.split(" by ")[0]
         self.InstallView.open() 
 
+    def open_search_box(self):
+        Animation(pos_hint={"center_y":0.38 if self.root.ids.search_box.pos_hint["center_y"] == -1 else -1  },d=0.3,t="in_out_cubic").start(self.root.ids.search_box)
+
     def apply_theme_openbox(self,theme):
         if os.path.exists(self.openbox_theme_file[:-9]+f"/{theme}/apply.sh"):
             _thread.start_new_thread(lambda x,y: os.system(which("bash")+" "+self.openbox_theme_dir+f"/{theme}/apply.sh &"),("",""))

@@ -69,7 +69,7 @@
 
 MDBottomNavigation:
     font_name:app.medium_font
-    radius:dp(10)
+    #radius:dp(10)
     selected_color_background:app.theme_cls.bg_normal[:-1] + [0.5]
     MDBottomNavigationItem:
         name:"online"
@@ -90,6 +90,7 @@ MDBottomNavigation:
             icon_left:"magnify"
             radius:[dp(5) for i in range(4)]
             font_name:app.medium_font
+            on_focus:app.open_search_box()
             
         AnchorLayout:
             anchor_y:"bottom"
@@ -134,9 +135,9 @@ MDBottomNavigation:
             id:search_box
             size_hint:1,0.8
             radius:[dp(20),dp(20),0,0]
-            md_bg_color:app.theme_cls.bg_light
+            md_bg_color:app.theme_cls.bg_dark
             pos_hint:{"center_y":-1}
-
+        
     MDBottomNavigationItem:
         name:"main"
         text:"My Themes"
@@ -167,4 +168,5 @@ MDBottomNavigation:
                     padding:dp(10)
                     orientation:"vertical"
                     spacing:dp(30)
+        
 
