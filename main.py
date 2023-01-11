@@ -94,8 +94,8 @@ class ThemeManager(MDApp):
 
     def load_local_themes(self,*args):
         Animation(opacity=0,d=0.2).start(self.root.ids.local_themes)
-        Clock.schedule_once(self.add_openbox_local_theme_widget,0.3)
-        Clock.schedule_once(lambda arg : Animation(opacity=1,d=0.2).start(self.root.ids.local_themes),0.4)
+        Clock.schedule_once(self.add_openbox_local_theme_widget,0.5)
+        Clock.schedule_once(lambda arg : Animation(opacity=1,d=0.2).start(self.root.ids.local_themes),0.7)
 
     def add_openbox_local_theme_widget(self,arg):
         self.root.ids.local_themes.clear_widgets()
@@ -106,7 +106,7 @@ class ThemeManager(MDApp):
         if os.path.isfile("./default_previews/{}.png".format(current_theme)):
             CurrentWidget.source = "./default_previews/{}.png".format(current_theme)
         else:
-            self.openbox_theme_dir+f"{current_theme}/preview.png"
+            CurrentWidget.source = self.openbox_theme_dir+f"{current_theme}/preview.png"
         CurrentWidget.text = current_theme.capitalize()
         CurrentWidget.children[0].style = "outlined"
         CurrentWidget.children[0].line_color = self.theme_cls.accent_light
