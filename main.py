@@ -91,7 +91,7 @@ class ThemeManager(MDApp):
             if theme.lower() in self.get_all_openbox_themes():
                 Widget.installed = True
             self.root.ids.online_theme_lower.add_widget(Widget)
-
+ 
     def load_local_themes(self,*args):
         Animation(opacity=0,d=0.2).start(self.root.ids.local_themes)
         Clock.schedule_once(self.add_openbox_local_theme_widget,0.5)
@@ -134,7 +134,34 @@ class ThemeManager(MDApp):
         self.InstallView.open() 
 
     def open_search_box(self):
-        Animation(pos_hint={"center_y":0.38 if self.root.ids.search_box.pos_hint["center_y"] == -1 else -1  },d=0.3,t="in_out_cubic").start(self.root.ids.search_box)
+        Animation(pos_hint={"center_y":0.38 if self.root.ids.search_box.pos_hint["center_y"] == -1 else -1  },radius = [dp(20),dp(20),0,0] if self.root.ids.search_box.radius == [0] * 4 else [0] * 4 ,d=0.3,t="in_out_cubic").start(self.root.ids.search_box)
+        self.handle_search()
+
+    def handle_search(self,text="",search=False):
+        def add_icon_item(theme_name):
+            self.root.ids.search_view.data.append(
+                {
+                    "viewclass": "ThemeViewOnline",
+                    "text": theme_name+" by "+(self.themes["Online"][theme_name]["maker"] if theme_name in self.themes["Online"].keys() else self.themes["Popular"][theme_name]["maker"]),
+                    "size_hint":[1,None],
+                    "size":[dp(50),dp(180)],
+                    "source":self.themes["Online"][theme_name]["thumbnail"] if theme_name in self.themes["Online"].keys() else self.themes["Popular"][theme_name]["thumbnail"],
+                    "installed":True if theme_name.lower() in self.get_all_openbox_themes() else False,
+                    "file_size":self.themes["Online"][theme_name]["file_size"] if theme_name in self.themes["Online"].keys() else self.themes["Popular"][theme_name]["file_size"],
+                    "download_url":self.themes["Online"][theme_name]["downloadurl"] if theme_name in self.themes["Online"].keys() else self.themes["Popular"][theme_name]["downloadurl"],
+
+                }
+            )
+        self.root.ids.search_view.data = []
+        self.root.ids.search_view.data.append({"viewclass":"MDLabel","size_hint":[1,None],"size":[dp(10),dp(30)]})
+        if search:
+            for theme in list(self.themes["Online"].keys())+list(self.themes["Popular"].keys()):
+                if text.strip().lower() in theme.lower():
+                    add_icon_item(theme)                    
+
+        else:
+            for theme in list(self.themes["Online"].keys())+list(self.themes["Popular"].keys()):
+                add_icon_item(theme)
 
     def apply_theme_openbox(self,theme):
         if os.path.exists(self.openbox_theme_file[:-9]+f"/{theme}/apply.sh"):

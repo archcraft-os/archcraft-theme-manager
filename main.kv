@@ -1,3 +1,4 @@
+#:import Clock kivy.clock.Clock
 <ThemeView>:
     source:""
     text:""
@@ -91,6 +92,7 @@ MDBottomNavigation:
             radius:[dp(5) for i in range(4)]
             font_name:app.medium_font
             on_focus:app.open_search_box()
+            on_text:Clock.schedule_once(lambda arg :app.handle_search(text=self.text,search=True))
             
         AnchorLayout:
             anchor_y:"bottom"
@@ -131,12 +133,27 @@ MDBottomNavigation:
                         text:"Online Themes"
                         font_name:app.medium_font
                         font_size:"15sp"
-        MDBoxLayout:
+        MDAnchorLayout:
             id:search_box
             size_hint:1,0.8
-            radius:[dp(20),dp(20),0,0]
+            radius:[0] * 4#[dp(20),dp(20),0,0]
             md_bg_color:app.theme_cls.bg_dark
             pos_hint:{"center_y":-1}
+            RecycleView:
+                id:search_view
+                size_hint:0.95,1
+                key_viewclass: 'viewclass'
+                key_size: 'height'
+                RecycleBoxLayout:
+                    orientation:"vertical"
+                    default_size: None, dp(50)
+                    default_size_hint: 1, None
+                    size_hint_x:1
+                    size_hint_y: None
+                    height: self.minimum_height
+                    #padding:dp(10)
+                    spacing:dp(10)
+
         
     MDBottomNavigationItem:
         name:"main"
