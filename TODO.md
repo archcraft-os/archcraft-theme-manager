@@ -1,14 +1,16 @@
 ## TODO
-- [ ]  Add bswpm support
+- [x]  Add bswpm support
 
-- [ ] Make searchbar working
+- [x] Make searchbar working
 
 - [ ] Add auto themes.json loader
 
-- [ ] Add animation in screen switching
+- [x] Add animation in screen switching
 
 - [ ] Add settings.json (or .conf) for app theme
 
-- [ ] Fix bugs in autoloding
+- [x] Fix bugs in autoloding
 
 - [ ] Add theme maker
+
+- [ ] Add check before applying theme
