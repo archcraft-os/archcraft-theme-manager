@@ -1,8 +1,9 @@
 #!/usr/bin/python3
 from kivy.config import Config
+
 Config.set("graphics", "height", "650")
 Config.set("graphics", "width", "380")
-Config.set("input","%(name)s","probesysfs,provider=hidinput")
+Config.set("input", "%(name)s", "probesysfs,provider=hidinput")
 from kivy.lang import Builder
 from kivymd.app import MDApp
 from kivymd.uix.anchorlayout import MDAnchorLayout
@@ -20,14 +21,18 @@ import _thread
 
 Loader.loading_image = "./assets/loading.png"
 
+
 class ThemeView(MDAnchorLayout):
     pass
+
 
 class ThemeViewOnline(MDAnchorLayout):
     pass
 
+
 class Tab(MDFloatLayout, MDTabsBase):
     pass
+
 
 class ThemeManager(MDApp):
 
@@ -35,17 +40,34 @@ class ThemeManager(MDApp):
     regular_font = "./fonts/Poppins-Regular.ttf"
     light_font = "./fonts/Poppins-Light.ttf"
     medium_font = "./fonts/Poppins-Medium.ttf"
-    inbuit_themes = ['adaptive', 'beach', 'default', 'easy', 'forest', 'hack', 'manhattan', 'slime', 'spark', 'wave']
-    themes = json.load(open("themes.json","r"))
+    inbuit_themes = [
+        "adaptive",
+        "beach",
+        "default",
+        "easy",
+        "forest",
+        "hack",
+        "manhattan",
+        "slime",
+        "spark",
+        "wave",
+    ]
+    themes = json.load(open("themes.json", "r"))
     icon = "logo.png"
     title = "Archcraft Theme Manager"
 
     def build(self):
         self.name_linux = os.popen("whoami").read()[:-1]
-        self.openbox_theme_dir = "/home/{}/.config/openbox-themes/themes/".format(self.name_linux)
-        self.openbox_theme_file = "/home/{}/.config/openbox-themes/themes/.current".format(self.name_linux)
+        self.openbox_theme_dir = "/home/{}/.config/openbox-themes/themes/".format(
+            self.name_linux
+        )
+        self.openbox_theme_file = (
+            "/home/{}/.config/openbox-themes/themes/.current".format(self.name_linux)
+        )
         self.bspwm_theme_dir = "/home/{}/.config/bspwm/themes/".format(self.name_linux)
-        self.bspwm_theme_file = "/home/{}/.config/bspwm/themes/.current".format(self.name_linux)
+        self.bspwm_theme_file = "/home/{}/.config/bspwm/themes/.current".format(
+            self.name_linux
+        )
 
         self.theme_cls.theme_style = "Dark"
         self.theme_cls.material_style = "M3"
@@ -53,7 +75,8 @@ class ThemeManager(MDApp):
         self.InstallView = Builder.load_file("modal_views/install_theme.kv")
         self.DynamicView = Builder.load_file("modal_views/dynamic_view.kv")
         from kivy.core.window import Window
-        Window.size = [380,650]
+
+        Window.size = [380, 650]
         return self.MainUI
 
     def on_start(self):
@@ -62,18 +85,24 @@ class ThemeManager(MDApp):
         self.load_popular()
         self.load_online()
 
-    def refresh_offline_openbox(self,*largs):
+    def refresh_offline_openbox(self, *largs):
         self.load_local_themes_openbox()
-        Clock.schedule_once(lambda arg: self.root.ids.openbox_scrollview.refresh_done(),2)
+        Clock.schedule_once(
+            lambda arg: self.root.ids.openbox_scrollview.refresh_done(), 2
+        )
 
-    def refresh_offline_bspwm(self,*largs):
+    def refresh_offline_bspwm(self, *largs):
         self.load_local_themes_bspwm()
-        Clock.schedule_once(lambda arg: self.root.ids.bspwm_scrollview.refresh_done(),2)
+        Clock.schedule_once(
+            lambda arg: self.root.ids.bspwm_scrollview.refresh_done(), 2
+        )
 
-    def refresh_online(self,*largs):
+    def refresh_online(self, *largs):
         self.load_popular()
         self.load_online()
-        Clock.schedule_once(lambda arg: self.root.ids.refresh_layout_online.refresh_done(),2)
+        Clock.schedule_once(
+            lambda arg: self.root.ids.refresh_layout_online.refresh_done(), 2
+        )
 
     def load_popular(self):
         if len(self.root.ids.online_theme_top.children) > 4:
@@ -81,7 +110,9 @@ class ThemeManager(MDApp):
         for theme in self.themes["Popular"].keys():
             Widget = ThemeViewOnline()
             Widget.source = self.themes["Popular"][theme]["thumbnail"]
-            Widget.text = "{} by {}".format(theme,self.themes["Popular"][theme]["maker"])
+            Widget.text = "{} by {}".format(
+                theme, self.themes["Popular"][theme]["maker"]
+            )
             Widget.file_size = self.themes["Popular"][theme]["file_size"]
             Widget.download_url = self.themes["Popular"][theme]["downloadurl"]
             if theme.lower() in self.get_all_openbox_themes():
@@ -96,35 +127,56 @@ class ThemeManager(MDApp):
         for theme in self.themes["Online"].keys():
             Widget = ThemeViewOnline()
             Widget.source = self.themes["Online"][theme]["thumbnail"]
-            Widget.text = "{} by {}".format(theme,self.themes["Online"][theme]["maker"])
+            Widget.text = "{} by {}".format(
+                theme, self.themes["Online"][theme]["maker"]
+            )
             Widget.file_size = self.themes["Online"][theme]["file_size"]
             Widget.download_url = self.themes["Online"][theme]["downloadurl"]
             if theme.lower() in self.get_all_openbox_themes():
                 Widget.installed = True
             self.root.ids.online_theme_lower.add_widget(Widget)
- 
-    def load_local_themes_openbox(self,*args):
-        Animation(opacity=0,d=0.2).start(self.root.ids.local_themes)
-        Clock.schedule_once(self.add_openbox_local_theme_widget,0.5)
-        Clock.schedule_once(lambda arg : Animation(opacity=1,d=0.2).start(self.root.ids.local_themes),0.8)
-        Clock.schedule_once(lambda arg : Animation(opacity=0,d=0.2).start(self.root.ids.load_label),0.8)
 
-    def load_local_themes_bspwm(self,*args):
-        Animation(opacity=0,d=0.2).start(self.root.ids.local_themes_bspwm)
-        Clock.schedule_once(self.add_bspwm_local_theme_widget,0.5)
-        Clock.schedule_once(lambda arg : Animation(opacity=1,d=0.2).start(self.root.ids.local_themes_bspwm),0.8)
-        Clock.schedule_once(lambda arg : Animation(opacity=0,d=0.2).start(self.root.ids.load_label_bspwm),0.8)
+    def load_local_themes_openbox(self, *args):
+        Animation(opacity=0, d=0.2).start(self.root.ids.local_themes)
+        Clock.schedule_once(self.add_openbox_local_theme_widget, 0.5)
+        Clock.schedule_once(
+            lambda arg: Animation(opacity=1, d=0.2).start(self.root.ids.local_themes),
+            0.8,
+        )
+        Clock.schedule_once(
+            lambda arg: Animation(opacity=0, d=0.2).start(self.root.ids.load_label), 0.8
+        )
 
-    def add_openbox_local_theme_widget(self,arg):
+    def load_local_themes_bspwm(self, *args):
+        Animation(opacity=0, d=0.2).start(self.root.ids.local_themes_bspwm)
+        Clock.schedule_once(self.add_bspwm_local_theme_widget, 0.5)
+        Clock.schedule_once(
+            lambda arg: Animation(opacity=1, d=0.2).start(
+                self.root.ids.local_themes_bspwm
+            ),
+            0.8,
+        )
+        Clock.schedule_once(
+            lambda arg: Animation(opacity=0, d=0.2).start(
+                self.root.ids.load_label_bspwm
+            ),
+            0.8,
+        )
+
+    def add_openbox_local_theme_widget(self, arg):
         self.root.ids.local_themes.clear_widgets()
         all_themes = self.get_all_openbox_themes()
         current_theme = self.get_current_openbox_theme()
         all_themes.remove(current_theme)
         CurrentWidget = ThemeView()
         if os.path.isfile("./default_previews/{}_openbox.png".format(current_theme)):
-            CurrentWidget.source = "./default_previews/{}_openbox.png".format(current_theme)
+            CurrentWidget.source = "./default_previews/{}_openbox.png".format(
+                current_theme
+            )
         else:
-            CurrentWidget.source = self.openbox_theme_dir+f"{current_theme}/preview.png"
+            CurrentWidget.source = (
+                self.openbox_theme_dir + f"{current_theme}/preview.png"
+            )
         CurrentWidget.text = current_theme.capitalize()
         CurrentWidget.children[0].style = "outlined"
         CurrentWidget.children[0].line_color = self.theme_cls.accent_light
@@ -136,22 +188,26 @@ class ThemeManager(MDApp):
         for theme in all_themes:
             TestWidget = ThemeView()
             if os.path.isfile("./default_previews/{}_openbox.png".format(theme)):
-                TestWidget.source = "./default_previews/{}_openbox.png".format(theme) 
+                TestWidget.source = "./default_previews/{}_openbox.png".format(theme)
             else:
-                TestWidget.source = self.openbox_theme_dir+f"{theme}/preview.png"
+                TestWidget.source = self.openbox_theme_dir + f"{theme}/preview.png"
             TestWidget.text = theme.capitalize()
             self.root.ids.local_themes.add_widget(TestWidget)
 
-    def add_bspwm_local_theme_widget(self,arg):
+    def add_bspwm_local_theme_widget(self, arg):
         self.root.ids.local_themes_bspwm.clear_widgets()
         all_themes = self.get_all_bspwm_themes()
         current_theme = self.get_current_bspwm_theme()
         all_themes.remove(current_theme)
         CurrentWidget = ThemeView()
         if os.path.isfile("./default_previews/{}_bspwm.png".format(current_theme)):
-            CurrentWidget.source = "./default_previews/{}_bspwm.png".format(current_theme)
+            CurrentWidget.source = "./default_previews/{}_bspwm.png".format(
+                current_theme
+            )
         else:
-            CurrentWidget.source = self.openbox_theme_dir+f"{current_theme}/preview.png"
+            CurrentWidget.source = (
+                self.openbox_theme_dir + f"{current_theme}/preview.png"
+            )
         CurrentWidget.text = current_theme.capitalize()
         CurrentWidget.children[0].style = "outlined"
         CurrentWidget.children[0].line_color = self.theme_cls.accent_light
@@ -164,158 +220,243 @@ class ThemeManager(MDApp):
         for theme in all_themes:
             TestWidget = ThemeView()
             if os.path.isfile("./default_previews/{}_bspwm.png".format(theme)):
-                TestWidget.source = "./default_previews/{}_bspwm.png".format(theme) 
+                TestWidget.source = "./default_previews/{}_bspwm.png".format(theme)
             else:
-                TestWidget.source = self.openbox_theme_dir+f"{theme}/preview.png"
+                TestWidget.source = self.openbox_theme_dir + f"{theme}/preview.png"
             TestWidget.text = theme.capitalize()
             TestWidget.type = "bspwm"
             self.root.ids.local_themes_bspwm.add_widget(TestWidget)
 
-    def open_theme_installer(self,root):
+    def open_theme_installer(self, root):
         self.InstallView.ids.theme_name.text = root.text.split(" by ")[0]
         self.InstallView.ids.dev_name.text = root.text.split(" by ")[-1]
         self.InstallView.ids.file_size.text = root.file_size
         self.InstallView.ids.image.source = root.source
         self.InstallView.ids.install_button.url = root.download_url
         self.InstallView.ids.install_button.name = root.text.split(" by ")[0]
-        self.InstallView.open() 
+        self.InstallView.open()
 
     def open_search_box(self):
-        Animation(pos_hint={"center_y":0.38 if self.root.ids.search_box.pos_hint["center_y"] == -1 else -1  },radius = [dp(20),dp(20),0,0] if self.root.ids.search_box.radius == [0] * 4 else [0] * 4 ,d=0.3,t="in_out_cubic").start(self.root.ids.search_box)
+        Animation(
+            pos_hint={
+                "center_y": 0.38
+                if self.root.ids.search_box.pos_hint["center_y"] == -1
+                else -1
+            },
+            radius=[dp(20), dp(20), 0, 0]
+            if self.root.ids.search_box.radius == [0] * 4
+            else [0] * 4,
+            d=0.3,
+            t="in_out_cubic",
+        ).start(self.root.ids.search_box)
         self.handle_search()
 
-    def handle_search(self,text="",search=False):
+    def handle_search(self, text="", search=False):
         def add_icon_item(theme_name):
             self.root.ids.search_view.data.append(
                 {
                     "viewclass": "ThemeViewOnline",
-                    "text": theme_name+" by "+(self.themes["Online"][theme_name]["maker"] if theme_name in self.themes["Online"].keys() else self.themes["Popular"][theme_name]["maker"]),
-                    "size_hint":[1,None],
-                    "size":[dp(50),dp(180)],
-                    "source":self.themes["Online"][theme_name]["thumbnail"] if theme_name in self.themes["Online"].keys() else self.themes["Popular"][theme_name]["thumbnail"],
-                    "installed":True if theme_name.lower() in self.get_all_openbox_themes() else False,
-                    "file_size":self.themes["Online"][theme_name]["file_size"] if theme_name in self.themes["Online"].keys() else self.themes["Popular"][theme_name]["file_size"],
-                    "download_url":self.themes["Online"][theme_name]["downloadurl"] if theme_name in self.themes["Online"].keys() else self.themes["Popular"][theme_name]["downloadurl"],
-
+                    "text": theme_name
+                    + " by "
+                    + (
+                        self.themes["Online"][theme_name]["maker"]
+                        if theme_name in self.themes["Online"].keys()
+                        else self.themes["Popular"][theme_name]["maker"]
+                    ),
+                    "size_hint": [1, None],
+                    "size": [dp(50), dp(180)],
+                    "source": self.themes["Online"][theme_name]["thumbnail"]
+                    if theme_name in self.themes["Online"].keys()
+                    else self.themes["Popular"][theme_name]["thumbnail"],
+                    "installed": True
+                    if theme_name.lower() in self.get_all_openbox_themes()
+                    else False,
+                    "file_size": self.themes["Online"][theme_name]["file_size"]
+                    if theme_name in self.themes["Online"].keys()
+                    else self.themes["Popular"][theme_name]["file_size"],
+                    "download_url": self.themes["Online"][theme_name]["downloadurl"]
+                    if theme_name in self.themes["Online"].keys()
+                    else self.themes["Popular"][theme_name]["downloadurl"],
                 }
             )
+
         self.root.ids.search_view.data = []
-        self.root.ids.search_view.data.append({"viewclass":"MDLabel","size_hint":[1,None],"size":[dp(10),dp(30)]})
+        self.root.ids.search_view.data.append(
+            {"viewclass": "MDLabel", "size_hint": [1, None], "size": [dp(10), dp(30)]}
+        )
         if search:
-            for theme in list(self.themes["Online"].keys())+list(self.themes["Popular"].keys()):
+            for theme in list(self.themes["Online"].keys()) + list(
+                self.themes["Popular"].keys()
+            ):
                 if text.strip().lower() in theme.lower():
-                    add_icon_item(theme)                    
+                    add_icon_item(theme)
 
         else:
-            for theme in list(self.themes["Online"].keys())+list(self.themes["Popular"].keys()):
+            for theme in list(self.themes["Online"].keys()) + list(
+                self.themes["Popular"].keys()
+            ):
                 add_icon_item(theme)
 
-    def apply_theme_openbox(self,theme):
+    def apply_theme_openbox(self, theme):
         self.root.ids.load_label.opacity = 1
-        if os.path.exists(self.openbox_theme_file[:-9]+f"/{theme}/apply.sh"):
-            _thread.start_new_thread(lambda x,y: os.system(which("bash")+" "+self.openbox_theme_dir+f"/{theme}/apply.sh &"),("",""))
+        if os.path.exists(self.openbox_theme_file[:-9] + f"/{theme}/apply.sh"):
+            _thread.start_new_thread(
+                lambda x, y: os.system(
+                    which("bash")
+                    + " "
+                    + self.openbox_theme_dir
+                    + f"/{theme}/apply.sh &"
+                ),
+                ("", ""),
+            )
             Clock.schedule_once(self.load_local_themes_openbox)
 
-    def apply_theme_bspwm(self,theme):
+    def apply_theme_bspwm(self, theme):
         self.root.ids.load_label_bspwm.opacity = 1
-        if os.path.exists(self.bspwm_theme_file[:-9]+f"/{theme}/apply.sh"):
-            _thread.start_new_thread(lambda x,y: os.system(which("bash")+" "+self.bspwm_theme_dir+f"/{theme}/apply.sh &"),("",""))
+        if os.path.exists(self.bspwm_theme_file[:-9] + f"/{theme}/apply.sh"):
+            _thread.start_new_thread(
+                lambda x, y: os.system(
+                    which("bash") + " " + self.bspwm_theme_dir + f"/{theme}/apply.sh &"
+                ),
+                ("", ""),
+            )
             Clock.schedule_once(self.load_local_themes_bspwm)
-
 
     def get_current_openbox_theme(self) -> str:
         if os.path.isfile(self.openbox_theme_file):
-            with open(self.openbox_theme_file,"r") as file:
+            with open(self.openbox_theme_file, "r") as file:
                 self.current_theme = file.read().split("\n")[0]
                 file.close()
             return self.current_theme
         else:
-            raise FileNotFoundError("It does'nt seems you have openbox-themes installed?")
+            raise FileNotFoundError(
+                "It does'nt seems you have openbox-themes installed?"
+            )
 
     def get_current_bspwm_theme(self) -> str:
         if os.path.isfile(self.bspwm_theme_file):
-            with open(self.bspwm_theme_file,"r") as file:
+            with open(self.bspwm_theme_file, "r") as file:
                 self.current_theme = file.read().split("\n")[0]
                 file.close()
             return self.current_theme
         else:
             raise FileNotFoundError("It does'nt seems you have bspwm-themes installed?")
 
-    def set_current_openbox_theme(self,theme:str) -> None:
+    def set_current_openbox_theme(self, theme: str) -> None:
         if os.path.isfile(self.openbox_theme_file):
-            with open(self.openbox_theme_file,"w") as file:
+            with open(self.openbox_theme_file, "w") as file:
                 file.write(theme)
                 file.close()
             return theme
         else:
-            raise FileNotFoundError("It does'nt seems you have openbox-themes installed?")
+            raise FileNotFoundError(
+                "It does'nt seems you have openbox-themes installed?"
+            )
 
     def get_all_openbox_themes(self):
         if os.path.isdir("/".join(self.openbox_theme_file.split("/")[:-1])):
             files = os.listdir("/".join(self.openbox_theme_file.split("/")[:-1]))
-            folders = [] 
+            folders = []
             for file in files:
-                if os.path.isdir(self.openbox_theme_dir+file):
+                if os.path.isdir(self.openbox_theme_dir + file):
                     folders.append(file)
         return folders
 
     def get_all_bspwm_themes(self):
         if os.path.isdir("/".join(self.bspwm_theme_file.split("/")[:-1])):
             files = os.listdir("/".join(self.bspwm_theme_file.split("/")[:-1]))
-            folders = [] 
+            folders = []
             for file in files:
-                if os.path.isdir(self.bspwm_theme_dir+file):
+                if os.path.isdir(self.bspwm_theme_dir + file):
                     folders.append(file)
         return folders
 
-    def send_notification(self,text):
-        os.system("{} -a 'Archcraft Theme Manager' -i logo.png '{}'".format(which("notify-send"),text))
+    def send_notification(self, text):
+        os.system(
+            "{} -a 'Archcraft Theme Manager' -i logo.png '{}'".format(
+                which("notify-send"), text
+            )
+        )
 
-    def download_file(self,url):
-        self.set_value(self.DynamicView.ids.text_main,"Downloding ...")
+    def download_file(self, url):
+        self.set_value(self.DynamicView.ids.text_main, "Downloding ...")
         if os.path.isdir("/home/{}/.cache/atm".format(self.name_linux)) == False:
             os.system("mkdir ~/.cache/atm/")
-        os.system("rm -rf ~/.cache/atm/*") # clear previous files
+        os.system("rm -rf ~/.cache/atm/*")  # clear previous files
         # This most common file name finding algorithm
-        filename = "/home/{}/.cache/atm/{}".format(self.name_linux,url.split("/")[-1])
-        if os.system(which("wget")+" "+url+" -O {}".format(filename)) == 0:
-            _thread.start_new_thread(lambda x,y:self.install_file(filename),("",""))
+        filename = "/home/{}/.cache/atm/{}".format(self.name_linux, url.split("/")[-1])
+        if os.system(which("wget") + " " + url + " -O {}".format(filename)) == 0:
+            _thread.start_new_thread(lambda x, y: self.install_file(filename), ("", ""))
         else:
-            self.set_value(self.DynamicView.ids.text_main,"Download Failed")
-            Clock.schedule_once(lambda x : self.DynamicView.dismiss(),1)
-            self.send_notification("Theme installation failed {}".format(self.theme_name))
+            self.set_value(self.DynamicView.ids.text_main, "Download Failed")
+            Clock.schedule_once(lambda x: self.DynamicView.dismiss(), 1)
+            self.send_notification(
+                "Theme installation failed {}".format(self.theme_name)
+            )
 
-    # the above and below functions are kinda mess 
+    # the above and below functions are kinda mess
     # but they work as intended
 
-    def install_file(self,filename):
-        self.set_value(self.DynamicView.ids.text_main,"Installing ...")
-        if os.system("cd {} && {} -xvf {} ".format("/".join(filename.split("/")[:-1]),which("tar"),filename)) != 0:
-            return 
+    def install_file(self, filename):
+        self.set_value(self.DynamicView.ids.text_main, "Installing ...")
+        if (
+            os.system(
+                "cd {} && {} -xvf {} ".format(
+                    "/".join(filename.split("/")[:-1]), which("tar"), filename
+                )
+            )
+            != 0
+        ):
+            return
         for folder in os.listdir("/".join(filename.split("/")[:-1])):
-            if os.path.isdir("/".join(filename.split("/")[:-1])+"/"+folder):
-                command = "cd {} && ".format("/".join(filename.split("/")[:-1])+"/"+folder)+which("bash")+" "+"/".join(filename.split("/")[:-1])+"/"+folder+"/install.sh"
+            if os.path.isdir("/".join(filename.split("/")[:-1]) + "/" + folder):
+                command = (
+                    "cd {} && ".format(
+                        "/".join(filename.split("/")[:-1]) + "/" + folder
+                    )
+                    + which("bash")
+                    + " "
+                    + "/".join(filename.split("/")[:-1])
+                    + "/"
+                    + folder
+                    + "/install.sh"
+                )
                 if os.system(command) == 0:
-                    preview = "/".join(filename.split("/")[:-1])+"/"+folder+"/preview.png"
+                    preview = (
+                        "/".join(filename.split("/")[:-1])
+                        + "/"
+                        + folder
+                        + "/preview.png"
+                    )
                     if os.path.isfile(preview):
-                        os.system("mv {} {}".format(preview,self.openbox_theme_dir+self.theme_name.lower()+"/preview.png"))
-                self.set_value(self.DynamicView.ids.text_main,"Done!")
-                Clock.schedule_once(lambda x : self.DynamicView.dismiss(),1)
-                
-                self.send_notification("Theme installation success {}".format(self.theme_name))
-                return 
-        self.set_value(self.DynamicView.ids.text_main,"Failed")
+                        os.system(
+                            "mv {} {}".format(
+                                preview,
+                                self.openbox_theme_dir
+                                + self.theme_name.lower()
+                                + "/preview.png",
+                            )
+                        )
+                self.set_value(self.DynamicView.ids.text_main, "Done!")
+                Clock.schedule_once(lambda x: self.DynamicView.dismiss(), 1)
+
+                self.send_notification(
+                    "Theme installation success {}".format(self.theme_name)
+                )
+                return
+        self.set_value(self.DynamicView.ids.text_main, "Failed")
         self.send_notification("Theme installation failed {}".format(self.theme_name))
 
-    def set_value(self,key,value):
+    def set_value(self, key, value):
         def run(arg):
             key.text = value
+
         Clock.schedule_once(run)
 
-    def install_theme(self,url,name):
+    def install_theme(self, url, name):
         self.DynamicView.open()
         self.theme_name = name
-        _thread.start_new_thread(lambda x,y: self.download_file(url),("",""))
+        _thread.start_new_thread(lambda x, y: self.download_file(url), ("", ""))
 
 
 ThemeManager().run()
