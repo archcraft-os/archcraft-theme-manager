@@ -15,6 +15,7 @@ from kivy.metrics import dp
 from kivy.clock import Clock
 from kivy.loader import Loader
 from shutil import which
+from urllib.request import urlopen
 import json
 import os
 import _thread
@@ -67,7 +68,7 @@ class ThemeManager(MDApp):
         self.bspwm_theme_dir = "/home/{}/.config/bspwm/themes/".format(self.name_linux)
         self.bspwm_theme_file = "/home/{}/.config/bspwm/themes/.current".format(
             self.name_linux
-        )
+            ):
 
         self.theme_cls.theme_style = "Dark"
         self.theme_cls.material_style = "M3"
@@ -80,6 +81,7 @@ class ThemeManager(MDApp):
         return self.MainUI
 
     def on_start(self):
+        Clock.schedule_interval(self.load_themes_json,60)
         self.load_local_themes_bspwm()
         self.load_local_themes_openbox()
         self.load_popular()
@@ -458,5 +460,13 @@ class ThemeManager(MDApp):
         self.theme_name = name
         _thread.start_new_thread(lambda x, y: self.download_file(url), ("", ""))
 
+    def load_themes_json(self):
+        try:
+            response = urlopen("https://raw.githubusercontent.com/archcraft-os/archcraft-theme-manager/main/themes.json")
+            with open("themes.json","w") as file:
+                file.write(response.read())
+                file.close()
+        except Exception:
+            return
 
 ThemeManager().run()

@@ -3,7 +3,7 @@
 
 - [x] Make searchbar working
 
-- [ ] Add auto themes.json loader
+- [x] Add auto themes.json loader
 
 - [x] Add animation in screen switching
 
