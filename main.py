@@ -460,7 +460,7 @@ class ThemeManager(MDApp):
         self.theme_name = name
         _thread.start_new_thread(lambda x, y: self.download_file(url), ("", ""))
 
-    def load_themes_json(self):
+    def load_themes_json(self,arg):
         try:
             response = urlopen("https://raw.githubusercontent.com/archcraft-os/archcraft-theme-manager/main/themes.json")
             with open("themes.json","w") as file:
