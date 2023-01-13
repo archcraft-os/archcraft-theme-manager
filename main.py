@@ -68,7 +68,7 @@ class ThemeManager(MDApp):
         self.bspwm_theme_dir = "/home/{}/.config/bspwm/themes/".format(self.name_linux)
         self.bspwm_theme_file = "/home/{}/.config/bspwm/themes/.current".format(
             self.name_linux
-            ):
+            )
 
         self.theme_cls.theme_style = "Dark"
         self.theme_cls.material_style = "M3"
