@@ -975,7 +975,7 @@ class MDTabsLabel(ToggleButtonBehavior, RectangularRippleBehavior, MDLabel):
     text_color_active = ColorProperty(None)
     tab = ObjectProperty()
     tab_bar = ObjectProperty()
-    font_name = StringProperty("Roboto")
+    font_name = "Roboto"
 
     def __init__(self, **kwargs):
         self.split_str = " ,-"

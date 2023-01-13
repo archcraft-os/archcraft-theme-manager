@@ -7,6 +7,8 @@ from kivy.lang import Builder
 from kivymd.app import MDApp
 from kivymd.uix.anchorlayout import MDAnchorLayout
 from kivymd.m_cardtextfield import M_CardTextField
+from kivymd.uix.floatlayout import MDFloatLayout
+from kivymd.uix.tab import MDTabsBase
 from kivy.animation import Animation
 from kivy.metrics import dp
 from kivy.clock import Clock
@@ -24,6 +26,8 @@ class ThemeView(MDAnchorLayout):
 class ThemeViewOnline(MDAnchorLayout):
     pass
 
+class Tab(MDFloatLayout, MDTabsBase):
+    pass
 
 class ThemeManager(MDApp):
 
@@ -40,8 +44,9 @@ class ThemeManager(MDApp):
         self.name_linux = os.popen("whoami").read()[:-1]
         self.openbox_theme_dir = "/home/{}/.config/openbox-themes/themes/".format(self.name_linux)
         self.openbox_theme_file = "/home/{}/.config/openbox-themes/themes/.current".format(self.name_linux)
-        self.bspwm_theme_dir = "/home/{}/.config/bspwm-themes/themes/".format(self.name_linux)
-        self.bspwm_theme_file = "/home/{}/.config/bspwm-themes/themes/.current".format(self.name_linux)
+        self.bspwm_theme_dir = "/home/{}/.config/bspwm/themes/".format(self.name_linux)
+        self.bspwm_theme_file = "/home/{}/.config/bspwm/themes/.current".format(self.name_linux)
+
         self.theme_cls.theme_style = "Dark"
         self.theme_cls.material_style = "M3"
         self.MainUI = Builder.load_file("main.kv")
@@ -52,13 +57,19 @@ class ThemeManager(MDApp):
         return self.MainUI
 
     def on_start(self):
-        self.load_local_themes()
+        self.load_local_themes_bspwm()
+        self.load_local_themes_openbox()
         self.load_popular()
         self.load_online()
 
-    def refresh_offline(self,*largs):
-        self.load_local_themes()
+    def refresh_offline_openbox(self,*largs):
+        self.load_local_themes_openbox()
         Clock.schedule_once(lambda arg: self.root.ids.openbox_scrollview.refresh_done(),2)
+
+    def refresh_offline_bspwm(self,*largs):
+        self.load_local_themes_bspwm()
+        Clock.schedule_once(lambda arg: self.root.ids.bspwm_scrollview.refresh_done(),2)
+
     def refresh_online(self,*largs):
         self.load_popular()
         self.load_online()
@@ -92,10 +103,17 @@ class ThemeManager(MDApp):
                 Widget.installed = True
             self.root.ids.online_theme_lower.add_widget(Widget)
  
-    def load_local_themes(self,*args):
+    def load_local_themes_openbox(self,*args):
         Animation(opacity=0,d=0.2).start(self.root.ids.local_themes)
         Clock.schedule_once(self.add_openbox_local_theme_widget,0.5)
         Clock.schedule_once(lambda arg : Animation(opacity=1,d=0.2).start(self.root.ids.local_themes),0.8)
+        Clock.schedule_once(lambda arg : Animation(opacity=0,d=0.2).start(self.root.ids.load_label),0.8)
+
+    def load_local_themes_bspwm(self,*args):
+        Animation(opacity=0,d=0.2).start(self.root.ids.local_themes_bspwm)
+        Clock.schedule_once(self.add_bspwm_local_theme_widget,0.5)
+        Clock.schedule_once(lambda arg : Animation(opacity=1,d=0.2).start(self.root.ids.local_themes_bspwm),0.8)
+        Clock.schedule_once(lambda arg : Animation(opacity=0,d=0.2).start(self.root.ids.load_label_bspwm),0.8)
 
     def add_openbox_local_theme_widget(self,arg):
         self.root.ids.local_themes.clear_widgets()
@@ -103,8 +121,8 @@ class ThemeManager(MDApp):
         current_theme = self.get_current_openbox_theme()
         all_themes.remove(current_theme)
         CurrentWidget = ThemeView()
-        if os.path.isfile("./default_previews/{}.png".format(current_theme)):
-            CurrentWidget.source = "./default_previews/{}.png".format(current_theme)
+        if os.path.isfile("./default_previews/{}_openbox.png".format(current_theme)):
+            CurrentWidget.source = "./default_previews/{}_openbox.png".format(current_theme)
         else:
             CurrentWidget.source = self.openbox_theme_dir+f"{current_theme}/preview.png"
         CurrentWidget.text = current_theme.capitalize()
@@ -117,12 +135,39 @@ class ThemeManager(MDApp):
 
         for theme in all_themes:
             TestWidget = ThemeView()
-            if os.path.isfile("./default_previews/{}.png".format(theme)):
-                TestWidget.source = "./default_previews/{}.png".format(theme) 
+            if os.path.isfile("./default_previews/{}_openbox.png".format(theme)):
+                TestWidget.source = "./default_previews/{}_openbox.png".format(theme) 
             else:
                 TestWidget.source = self.openbox_theme_dir+f"{theme}/preview.png"
             TestWidget.text = theme.capitalize()
             self.root.ids.local_themes.add_widget(TestWidget)
+
+    def add_bspwm_local_theme_widget(self,arg):
+        self.root.ids.local_themes_bspwm.clear_widgets()
+        all_themes = self.get_all_bspwm_themes()
+        current_theme = self.get_current_bspwm_theme()
+        all_themes.remove(current_theme)
+        CurrentWidget = ThemeView()
+        if os.path.isfile("./default_previews/{}_bspwm.png".format(current_theme)):
+            CurrentWidget.source = "./default_previews/{}_bspwm.png".format(current_theme)
+        else:
+            CurrentWidget.source = self.openbox_theme_dir+f"{current_theme}/preview.png"
+        CurrentWidget.text = current_theme.capitalize()
+        CurrentWidget.children[0].style = "outlined"
+        CurrentWidget.children[0].line_color = self.theme_cls.accent_light
+        CurrentWidget.children[0].line_width = dp(2)
+        CurrentWidget.ids.is_current.opacity = 1
+        self.root.ids.local_themes_bspwm.add_widget(CurrentWidget)
+        self.root.ids.bspwm_scrollview.scroll_to(CurrentWidget)
+
+        for theme in all_themes:
+            TestWidget = ThemeView()
+            if os.path.isfile("./default_previews/{}_bspwm.png".format(theme)):
+                TestWidget.source = "./default_previews/{}_bspwm.png".format(theme) 
+            else:
+                TestWidget.source = self.openbox_theme_dir+f"{theme}/preview.png"
+            TestWidget.text = theme.capitalize()
+            self.root.ids.local_themes_bspwm.add_widget(TestWidget)
 
     def open_theme_installer(self,root):
         self.InstallView.ids.theme_name.text = root.text.split(" by ")[0]
@@ -164,9 +209,10 @@ class ThemeManager(MDApp):
                 add_icon_item(theme)
 
     def apply_theme_openbox(self,theme):
+        self.root.ids.load_label.opacity = 1
         if os.path.exists(self.openbox_theme_file[:-9]+f"/{theme}/apply.sh"):
             _thread.start_new_thread(lambda x,y: os.system(which("bash")+" "+self.openbox_theme_dir+f"/{theme}/apply.sh &"),("",""))
-            Clock.schedule_once(self.load_local_themes)
+            Clock.schedule_once(self.load_local_themes_openbox)
 
     def get_current_openbox_theme(self) -> str:
         if os.path.isfile(self.openbox_theme_file):
@@ -176,6 +222,15 @@ class ThemeManager(MDApp):
             return self.current_theme
         else:
             raise FileNotFoundError("It does'nt seems you have openbox-themes installed?")
+
+    def get_current_bspwm_theme(self) -> str:
+        if os.path.isfile(self.bspwm_theme_file):
+            with open(self.bspwm_theme_file,"r") as file:
+                self.current_theme = file.read().split("\n")[0]
+                file.close()
+            return self.current_theme
+        else:
+            raise FileNotFoundError("It does'nt seems you have bspwm-themes installed?")
 
     def set_current_openbox_theme(self,theme:str) -> None:
         if os.path.isfile(self.openbox_theme_file):
@@ -192,6 +247,15 @@ class ThemeManager(MDApp):
             folders = [] 
             for file in files:
                 if os.path.isdir(self.openbox_theme_dir+file):
+                    folders.append(file)
+        return folders
+
+    def get_all_bspwm_themes(self):
+        if os.path.isdir("/".join(self.bspwm_theme_file.split("/")[:-1])):
+            files = os.listdir("/".join(self.bspwm_theme_file.split("/")[:-1]))
+            folders = [] 
+            for file in files:
+                if os.path.isdir(self.bspwm_theme_dir+file):
                     folders.append(file)
         return folders
 

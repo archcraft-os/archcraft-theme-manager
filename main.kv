@@ -161,29 +161,54 @@ MDBottomNavigation:
         md_bg_color:app.theme_cls.bg_normal
         icon:"account"
         id:ScreenOffline
-        MDLabel:
-            text:"Local Themes"
-            font_name:app.bold_font
-            pos_hint:{"center_x":0.53,"center_y":0.95}
-            font_size:"35sp"
-        AnchorLayout:
-            anchor_y:"bottom"
-            MDLabel:
-                text:"Applying ..."
+        MDTabs:
+            font_name:app.medium_font
+            allow_stretch:True
+            indicator_color:app.theme_cls.accent_light
+            Tab:
+                title:"Openbox"
+                AnchorLayout:
+                    anchor_y:"bottom"
+                    MDLabel:
+                        id:load_label
+                        text:"Applying ..."
+                        font_name:app.medium_font
+                        font_size:"30sp"
+                        halign:"center"
+                        opacity:0
+                    MDScrollViewRefreshLayout:
+                        root_layout: ScreenOffline
+                        size_hint_y:1
+                        refresh_callback:app.refresh_offline_openbox
+                        id:openbox_scrollview
+                        MDBoxLayout:
+                            md_bg_color:app.theme_cls.bg_normal
+                            id:local_themes
+                            adaptive_height:True
+                            padding:dp(10)
+                            orientation:"vertical"
+                            spacing:dp(30)
+            Tab:
+                title:"Bspwm"
                 font_name:app.medium_font
-                font_size:"30sp"
-                halign:"center"
-            MDScrollViewRefreshLayout:
-                root_layout: ScreenOffline
-                size_hint_y:0.85
-                refresh_callback:app.refresh_offline
-                id:openbox_scrollview
-                MDBoxLayout:
-                    md_bg_color:app.theme_cls.bg_normal
-                    id:local_themes
-                    adaptive_height:True
-                    padding:dp(10)
-                    orientation:"vertical"
-                    spacing:dp(30)
-        
-
+                AnchorLayout:
+                    anchor_y:"bottom"
+                    MDLabel:
+                        id:load_label_bspwm
+                        text:"Applying ..."
+                        font_name:app.medium_font
+                        font_size:"30sp"
+                        halign:"center"
+                        opacity:0
+                    MDScrollViewRefreshLayout:
+                        root_layout: ScreenOffline
+                        size_hint_y:1
+                        refresh_callback:app.refresh_offline_bspwm
+                        id:bspwm_scrollview
+                        MDBoxLayout:
+                            md_bg_color:app.theme_cls.bg_normal
+                            id:local_themes_bspwm
+                            adaptive_height:True
+                            padding:dp(10)
+                            orientation:"vertical"
+                            spacing:dp(30)
