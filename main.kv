@@ -2,6 +2,7 @@
 <ThemeView>:
     source:""
     text:""
+    type:"openbox"
     size_hint_y:None
     size:dp(50),dp(180)
     FitImage:
@@ -34,7 +35,7 @@
         size:dp(50),dp(185)
         radius:dp(10)
         md_bg_color:0,0,0,0
-        on_press:app.apply_theme_openbox(root.text.lower())
+        on_press:app.apply_theme_openbox(root.text.lower()) if root.type == "openbox" else app.apply_theme_bspwm(root.text.lower()) 
 
 
 <ThemeViewOnline>:

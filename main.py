@@ -157,6 +157,7 @@ class ThemeManager(MDApp):
         CurrentWidget.children[0].line_color = self.theme_cls.accent_light
         CurrentWidget.children[0].line_width = dp(2)
         CurrentWidget.ids.is_current.opacity = 1
+        CurrentWidget.type = "bspwm"
         self.root.ids.local_themes_bspwm.add_widget(CurrentWidget)
         self.root.ids.bspwm_scrollview.scroll_to(CurrentWidget)
 
@@ -167,6 +168,7 @@ class ThemeManager(MDApp):
             else:
                 TestWidget.source = self.openbox_theme_dir+f"{theme}/preview.png"
             TestWidget.text = theme.capitalize()
+            TestWidget.type = "bspwm"
             self.root.ids.local_themes_bspwm.add_widget(TestWidget)
 
     def open_theme_installer(self,root):
@@ -213,6 +215,13 @@ class ThemeManager(MDApp):
         if os.path.exists(self.openbox_theme_file[:-9]+f"/{theme}/apply.sh"):
             _thread.start_new_thread(lambda x,y: os.system(which("bash")+" "+self.openbox_theme_dir+f"/{theme}/apply.sh &"),("",""))
             Clock.schedule_once(self.load_local_themes_openbox)
+
+    def apply_theme_bspwm(self,theme):
+        self.root.ids.load_label_bspwm.opacity = 1
+        if os.path.exists(self.bspwm_theme_file[:-9]+f"/{theme}/apply.sh"):
+            _thread.start_new_thread(lambda x,y: os.system(which("bash")+" "+self.bspwm_theme_dir+f"/{theme}/apply.sh &"),("",""))
+            Clock.schedule_once(self.load_local_themes_bspwm)
+
 
     def get_current_openbox_theme(self) -> str:
         if os.path.isfile(self.openbox_theme_file):
