@@ -14,3 +14,7 @@
 - [ ] Add theme maker
 
 - [ ] Add check before applying theme
+
+- [ ] Make visible of type of online theme (openbox or bspwm)
+
+- [ ] Fix polybar crashing

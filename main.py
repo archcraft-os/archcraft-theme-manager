@@ -464,7 +464,9 @@ class ThemeManager(MDApp):
         try:
             response = urlopen("https://raw.githubusercontent.com/archcraft-os/archcraft-theme-manager/main/themes.json")
             with open("themes.json","w") as file:
-                file.write(response.read())
+                text = response.read()	
+                print(text)
+                file.write(text)
                 file.close()
         except Exception:
             return
