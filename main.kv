@@ -28,7 +28,7 @@
             opacity:0
             ripple_scale:0
             theme_icon_color:"Custom"
-            icon_color:app.theme_cls.accent_light
+            icon_color:app.theme_cls.accent_color
 
     MDCard:
         size_hint:0.815,None
@@ -94,6 +94,13 @@ MDBottomNavigation:
             font_name:app.medium_font
             on_focus:app.open_search_box()
             on_text:Clock.schedule_once(lambda arg :app.handle_search(text=self.text,search=True))
+            md_bg_color:app.theme_cls.opposite_bg_light
+            background_color:self.md_bg_color
+            foreground_color:app.theme_cls.bg_light
+            theme_icon_color:"Custom"
+            icon_left_color:app.theme_cls.bg_light
+            text_color:self.icon_left_color
+            theme_text_color:"Custom"
             
         AnchorLayout:
             anchor_y:"bottom"
@@ -165,7 +172,7 @@ MDBottomNavigation:
         MDTabs:
             font_name:app.medium_font
             allow_stretch:True
-            indicator_color:app.theme_cls.accent_light
+            tab_indicator_anim:True
             Tab:
                 title:"Openbox"
                 AnchorLayout:

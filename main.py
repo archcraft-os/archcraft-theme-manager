@@ -19,6 +19,7 @@ from urllib.request import urlopen
 import json
 import os
 import _thread
+import configparser
 
 Loader.loading_image = "./assets/loading.png"
 
@@ -37,10 +38,6 @@ class Tab(MDFloatLayout, MDTabsBase):
 
 class ThemeManager(MDApp):
 
-    bold_font = "./fonts/Poppins-Bold.ttf"
-    regular_font = "./fonts/Poppins-Regular.ttf"
-    light_font = "./fonts/Poppins-Light.ttf"
-    medium_font = "./fonts/Poppins-Medium.ttf"
     inbuit_themes = [
         "adaptive",
         "beach",
@@ -57,6 +54,11 @@ class ThemeManager(MDApp):
     icon = "logo.png"
     title = "Archcraft Theme Manager"
 
+    def parse_settings(self) -> dict:
+        config = configparser.ConfigParser()
+        config.read('config.ini')
+        return config["archcraft-theme-manager"]
+        
     def build(self):
         self.name_linux = os.popen("whoami").read()[:-1]
         self.openbox_theme_dir = "/home/{}/.config/openbox-themes/themes/".format(
@@ -69,8 +71,18 @@ class ThemeManager(MDApp):
         self.bspwm_theme_file = "/home/{}/.config/bspwm/themes/.current".format(
             self.name_linux
             )
-
-        self.theme_cls.theme_style = "Dark"
+        self.config = self.parse_settings()
+        print(dict(self.config))
+        self.bold_font = self.config["bold_font"]
+        self.regular_font = self.config["regular_font"]
+        self.medium_font = self.config["medium_font"]
+        self.theme_cls.theme_style = self.config["theme_style"]
+        self.theme_cls.primary_palette = self.config["primary_palette"]
+        self.theme_cls.accent_palette = self.config["accent_palette"]
+        self.theme_cls.primary_hue = self.config["primary_hue"]
+        self.theme_cls.accent_hue = self.config["accent_hue"]
+        self.theme_cls.heme_style_switch_animation = self.config["theme_style_switch_animation"]
+        self.theme_cls.theme_style_switch_animation_duration = float(self.config["theme_style_switch_animation_duration"])
         self.theme_cls.material_style = "M3"
         self.MainUI = Builder.load_file("main.kv")
         self.InstallView = Builder.load_file("modal_views/install_theme.kv")
@@ -181,7 +193,7 @@ class ThemeManager(MDApp):
             )
         CurrentWidget.text = current_theme.capitalize()
         CurrentWidget.children[0].style = "outlined"
-        CurrentWidget.children[0].line_color = self.theme_cls.accent_light
+        CurrentWidget.children[0].line_color = self.theme_cls.accent_color
         CurrentWidget.children[0].line_width = dp(2)
         CurrentWidget.ids.is_current.opacity = 1
         self.root.ids.local_themes.add_widget(CurrentWidget)
@@ -212,7 +224,7 @@ class ThemeManager(MDApp):
             )
         CurrentWidget.text = current_theme.capitalize()
         CurrentWidget.children[0].style = "outlined"
-        CurrentWidget.children[0].line_color = self.theme_cls.accent_light
+        CurrentWidget.children[0].line_color = self.theme_cls.accent_color
         CurrentWidget.children[0].line_width = dp(2)
         CurrentWidget.ids.is_current.opacity = 1
         CurrentWidget.type = "bspwm"
@@ -463,11 +475,10 @@ class ThemeManager(MDApp):
     def load_themes_json(self,arg):
         try:
             response = urlopen("https://raw.githubusercontent.com/archcraft-os/archcraft-theme-manager/main/themes.json")
-            with open("themes.json","w") as file:
-                text = response.read()	
-                print(text)
-                file.write(text)
-                file.close()
+            #with open("themes.json","w") as file:
+                #text = response.read()
+                #file.write(str(text))
+            #file.close()
         except Exception:
             return
 

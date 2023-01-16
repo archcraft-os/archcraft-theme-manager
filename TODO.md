@@ -7,7 +7,7 @@
 
 - [x] Add animation in screen switching
 
-- [ ] Add settings.json (or .conf) for app theme
+- [x] Add settings.json (or .conf) for app theme
 
 - [x] Fix bugs in autoloding
 
