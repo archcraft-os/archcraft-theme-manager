@@ -73,6 +73,7 @@ class ThemeManager(MDApp):
     def get_running_session(self):
         if os.system("pgrep -x openbox") == 0:
             return "openbox"
+
         elif os.system("pgrep -x bspwm") == 0:
             return "bspwm"
 
@@ -332,7 +333,7 @@ class ThemeManager(MDApp):
                 add_icon_item(theme)
 
     def apply_theme_openbox(self, theme):
-        if self.get_running_session != "openbox":
+        if self.get_running_session() != "openbox":
             self.send_notification("Openbox not running")
             return
 
@@ -350,7 +351,7 @@ class ThemeManager(MDApp):
             Clock.schedule_once(self.load_local_themes_openbox)
 
     def apply_theme_bspwm(self, theme):
-        if self.get_running_session != "bspwm":
+        if self.get_running_session() != "bspwm":
             self.send_notification("Bspwm not running")
             return
         self.root.ids.load_label_bspwm.opacity = 1
