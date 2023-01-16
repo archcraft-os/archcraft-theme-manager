@@ -9,13 +9,16 @@ from kivymd.app import MDApp
 from kivymd.uix.anchorlayout import MDAnchorLayout
 from kivymd.m_cardtextfield import M_CardTextField
 from kivymd.uix.floatlayout import MDFloatLayout
+from kivymd.uix.snackbar import Snackbar
 from kivymd.uix.tab import MDTabsBase
 from kivy.animation import Animation
 from kivy.metrics import dp
 from kivy.clock import Clock
 from kivy.loader import Loader
+from kivy.core.window import Window
 from shutil import which
 from urllib.request import urlopen
+import time
 import json
 import os
 import _thread
@@ -58,6 +61,33 @@ class ThemeManager(MDApp):
         config = configparser.ConfigParser()
         config.read('config.ini')
         return config["archcraft-theme-manager"]
+    
+    def settings_updater(self):
+        while True:
+            time.sleep(0.5)
+            try:
+                self.apply_settings()
+            except Exception:
+                pass
+
+    def get_running_session(self):
+        if os.system("pgrep -x openbox") == 0:
+            return "openbox"
+        elif os.system("pgrep -x bspwm") == 0:
+            return "bspwm"
+
+    def apply_settings(self):
+        self.config = self.parse_settings()
+        self.bold_font = self.config["bold_font"]
+        self.regular_font = self.config["regular_font"]
+        self.medium_font = self.config["medium_font"]
+        self.theme_cls.theme_style = self.config["theme_style"]
+        self.theme_cls.primary_palette = self.config["primary_palette"]
+        self.theme_cls.accent_palette = self.config["accent_palette"]
+        self.theme_cls.primary_hue = self.config["primary_hue"]
+        self.theme_cls.accent_hue = self.config["accent_hue"]
+        self.theme_cls.heme_style_switch_animation = self.config["theme_style_switch_animation"]
+        self.theme_cls.theme_style_switch_animation_duration = float(self.config["theme_style_switch_animation_duration"])
         
     def build(self):
         self.name_linux = os.popen("whoami").read()[:-1]
@@ -71,18 +101,8 @@ class ThemeManager(MDApp):
         self.bspwm_theme_file = "/home/{}/.config/bspwm/themes/.current".format(
             self.name_linux
             )
-        self.config = self.parse_settings()
-        print(dict(self.config))
-        self.bold_font = self.config["bold_font"]
-        self.regular_font = self.config["regular_font"]
-        self.medium_font = self.config["medium_font"]
-        self.theme_cls.theme_style = self.config["theme_style"]
-        self.theme_cls.primary_palette = self.config["primary_palette"]
-        self.theme_cls.accent_palette = self.config["accent_palette"]
-        self.theme_cls.primary_hue = self.config["primary_hue"]
-        self.theme_cls.accent_hue = self.config["accent_hue"]
-        self.theme_cls.heme_style_switch_animation = self.config["theme_style_switch_animation"]
-        self.theme_cls.theme_style_switch_animation_duration = float(self.config["theme_style_switch_animation_duration"])
+        self.apply_settings()
+        _thread.start_new_thread(self.settings_updater,())
         self.theme_cls.material_style = "M3"
         self.MainUI = Builder.load_file("main.kv")
         self.InstallView = Builder.load_file("modal_views/install_theme.kv")
@@ -312,6 +332,10 @@ class ThemeManager(MDApp):
                 add_icon_item(theme)
 
     def apply_theme_openbox(self, theme):
+        if self.get_running_session != "openbox":
+            self.send_notification("Openbox not running")
+            return
+
         self.root.ids.load_label.opacity = 1
         if os.path.exists(self.openbox_theme_file[:-9] + f"/{theme}/apply.sh"):
             _thread.start_new_thread(
@@ -326,6 +350,9 @@ class ThemeManager(MDApp):
             Clock.schedule_once(self.load_local_themes_openbox)
 
     def apply_theme_bspwm(self, theme):
+        if self.get_running_session != "bspwm":
+            self.send_notification("Bspwm not running")
+            return
         self.root.ids.load_label_bspwm.opacity = 1
         if os.path.exists(self.bspwm_theme_file[:-9] + f"/{theme}/apply.sh"):
             _thread.start_new_thread(
@@ -386,11 +413,19 @@ class ThemeManager(MDApp):
         return folders
 
     def send_notification(self, text):
-        os.system(
-            "{} -a 'Archcraft Theme Manager' -i logo.png '{}'".format(
-                which("notify-send"), text
+        def construct_bar(arg):
+            bar = Snackbar(
+                text=text,
+                snackbar_x="10dp",
+                snackbar_y="100dp",
+                shadow_softness=20,
+                size_hint_x=(
+                    Window.width - (dp(10) * 2)
+                ) / Window.width
             )
-        )
+            bar.font_name = self.regular_font
+            bar.open()
+        Clock.schedule_once(construct_bar)
 
     def download_file(self, url):
         self.set_value(self.DynamicView.ids.text_main, "Downloding ...")
@@ -481,5 +516,8 @@ class ThemeManager(MDApp):
             #file.close()
         except Exception:
             return
+
+if which("wget") == None:
+    raise FileNotFoundError("Wget is not installed on your system, install it")
 
 ThemeManager().run()

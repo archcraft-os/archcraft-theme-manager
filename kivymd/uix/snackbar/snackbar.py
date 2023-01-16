@@ -382,6 +382,7 @@ class BaseSnackbar(MDCard):
     """
 
     snackbar_y = NumericProperty("0dp")
+    font_name = "./fonts/Poppins-Regular.ttf"
     """
     The snackbar x position in the screen
 
