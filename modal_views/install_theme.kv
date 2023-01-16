@@ -3,7 +3,7 @@ ModalView:
 	RelativeLayout:
 		MDFlatButton:
             id:install_button
-			md_bg_color:app.theme_cls.primary_dark
+			md_bg_color:app.theme_cls.primary_color
 			text:"Install"	
 			size_hint:0.3,0.07
 			pos_hint:{"center_x":0.7,"center_y":0.2}
@@ -13,7 +13,7 @@ ModalView:
             on_touch_down:app.install_theme(self.url,self.name)
 		MDFlatButton:
 			md_bg_color:0,0,0,0
-			line_color:app.theme_cls.primary_light
+			line_color:app.theme_cls.primary_color
 			text:"Cancel" 
 			size_hint:0.3,0.07
 			pos_hint:{"center_x":0.3,"center_y":0.2}
