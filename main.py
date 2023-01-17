@@ -41,18 +41,6 @@ class Tab(MDFloatLayout, MDTabsBase):
 
 class ThemeManager(MDApp):
 
-    inbuit_themes = [
-        "adaptive",
-        "beach",
-        "default",
-        "easy",
-        "forest",
-        "hack",
-        "manhattan",
-        "slime",
-        "spark",
-        "wave",
-    ]
     themes = json.load(open("themes.json", "r"))
     icon = "logo.png"
     title = "Archcraft Theme Manager"
@@ -105,6 +93,8 @@ class ThemeManager(MDApp):
         self.apply_settings()
         _thread.start_new_thread(self.settings_updater,())
         self.theme_cls.material_style = "M3"
+        self.theme_cls.custom_normal = self.theme_cls.bg_normal #"#02002f"
+        self.theme_cls.custom_light = self.theme_cls.bg_light #"#0b135b"
         self.MainUI = Builder.load_file("main.kv")
         self.InstallView = Builder.load_file("modal_views/install_theme.kv")
         self.DynamicView = Builder.load_file("modal_views/dynamic_view.kv")
@@ -241,7 +231,7 @@ class ThemeManager(MDApp):
             )
         else:
             CurrentWidget.source = (
-                self.openbox_theme_dir + f"{current_theme}/preview.png"
+                self.bspwm_theme_dir + f"{current_theme}/preview.png"
             )
         CurrentWidget.text = current_theme.capitalize()
         CurrentWidget.children[0].style = "outlined"

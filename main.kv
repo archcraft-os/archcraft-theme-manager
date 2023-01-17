@@ -5,6 +5,10 @@
     type:"openbox"
     size_hint_y:None
     size:dp(50),dp(180)
+    MDCard:
+        size_hint:0.8,None
+        size:dp(50),dp(180)
+        radius:dp(10)
     FitImage:
         size_hint:0.8,None
         size:dp(50),dp(180)
@@ -21,6 +25,8 @@
             text:root.text
             halign:"center"
             font_name:app.regular_font
+            theme_text_color:"Custom"
+            text_color:1,1,1,1
         MDIconButton:
             id:is_current
             icon:"check"
@@ -31,12 +37,12 @@
             icon_color:app.theme_cls.accent_color
 
     MDCard:
-        size_hint:0.815,None
-        size:dp(50),dp(185)
+        size_hint:0.8,None
+        size:dp(50),dp(183)
         radius:dp(10)
         md_bg_color:0,0,0,0
         on_press:app.apply_theme_openbox(root.text.lower()) if root.type == "openbox" else app.apply_theme_bspwm(root.text.lower()) 
-
+    
 
 <ThemeViewOnline>:
     size_hint:1,None
@@ -60,6 +66,9 @@
             text:root.text
             halign:"center"
             font_name:app.regular_font
+            theme_text_color:"Custom"
+            text_color:1,1,1,1
+
         MDIconButton:
             icon:"check"
             opacity:0 if root.installed == False else 1
@@ -73,9 +82,10 @@ MDBottomNavigation:
     font_name:app.medium_font
     #radius:dp(10)
     selected_color_background:app.theme_cls.bg_normal[:-1] + [0.5]
+    panel_color:app.theme_cls.custom_light
     MDBottomNavigationItem:
         name:"online"
-        md_bg_color:app.theme_cls.bg_normal
+        md_bg_color:app.theme_cls.custom_normal
         icon:"earth"
         text:"Online Themes"
         id:ScreenOnline
@@ -84,6 +94,8 @@ MDBottomNavigation:
             font_name:app.bold_font
             pos_hint:{"center_x":0.53,"center_y":0.95}
             font_size:"35sp"
+            theme_text_color:"Custom"
+            text_color:app.theme_cls.opposite_bg_light
         M_CardTextField:
             text:""
             hint_text:"Search Themes"
@@ -120,10 +132,11 @@ MDBottomNavigation:
                         text:"Popular"
                         font_name:app.medium_font
                         font_size:"15sp"
+                        theme_text_color:"Custom"
+                        text_color:app.theme_cls.opposite_bg_light
                     RelativeLayout:
                         size_hint_y:None
                         size:dp(10),dp(200)
-
                         Carousel:
                             direction:"right"
                             id:online_theme_top
@@ -141,6 +154,9 @@ MDBottomNavigation:
                         text:"Online Themes"
                         font_name:app.medium_font
                         font_size:"15sp"
+                        theme_text_color:"Custom"
+                        text_color:app.theme_cls.opposite_bg_light
+
         MDAnchorLayout:
             id:search_box
             size_hint:1,0.8
