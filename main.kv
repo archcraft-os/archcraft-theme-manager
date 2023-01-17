@@ -1,4 +1,5 @@
 #:import Clock kivy.clock.Clock
+#:import Window kivy.core.window.Window
 <ThemeView>:
     source:""
     text:""
@@ -6,16 +7,16 @@
     size_hint_y:None
     size:dp(50),dp(180)
     MDCard:
-        size_hint:0.8,None
+        size_hint:0.8,1
         size:dp(50),dp(180)
         radius:dp(10)
     FitImage:
-        size_hint:0.8,None
+        size_hint:0.8,1
         size:dp(50),dp(180)
         radius:dp(10)
         source:root.source
     FitImage:
-        size_hint:0.8,None
+        size_hint:0.8,1
         size:dp(50),dp(180)
         radius:dp(10)
         source:"./assets/shadow-black-down.png"
@@ -37,7 +38,7 @@
             icon_color:app.theme_cls.accent_color
 
     MDCard:
-        size_hint:0.8,None
+        size_hint:0.8,1
         size:dp(50),dp(183)
         radius:dp(10)
         md_bg_color:0,0,0,0
@@ -50,6 +51,7 @@
     source:""
     text:""
     installed:False
+    type:"openbox"
     FitImage:
         size_hint:0.85,None
         size:dp(50),dp(180)
@@ -77,6 +79,15 @@
             icon:"download"
             pos_hint:{"center_y":0.12,"center_x":0.85}
             on_press:app.open_theme_installer(root)
+        Image:
+            visible:True
+            size_hint:None,None
+            size:dp(40),dp(40)
+            allow_stretch:True
+            keep_ratio:False
+            source:"./assets/{}.png".format(root.type)
+            pos_hint:{"center_y":0.8,"center_x":0.15}
+
 
 MDBottomNavigation:
     font_name:app.medium_font
@@ -182,7 +193,7 @@ MDBottomNavigation:
     MDBottomNavigationItem:
         name:"main"
         text:"My Themes"
-        md_bg_color:app.theme_cls.bg_normal
+        md_bg_color:app.theme_cls.custom_normal
         icon:"account"
         id:ScreenOffline
         MDTabs:
@@ -206,10 +217,10 @@ MDBottomNavigation:
                         refresh_callback:app.refresh_offline_openbox
                         id:openbox_scrollview
                         MDBoxLayout:
-                            md_bg_color:app.theme_cls.bg_normal
+                            md_bg_color:app.theme_cls.custom_normal
                             id:local_themes
                             adaptive_height:True
-                            padding:dp(10)
+                            padding_x:dp(30)
                             orientation:"vertical"
                             spacing:dp(30)
             Tab:
@@ -230,7 +241,7 @@ MDBottomNavigation:
                         refresh_callback:app.refresh_offline_bspwm
                         id:bspwm_scrollview
                         MDBoxLayout:
-                            md_bg_color:app.theme_cls.bg_normal
+                            md_bg_color:app.theme_cls.custom_normal
                             id:local_themes_bspwm
                             adaptive_height:True
                             padding:dp(10)

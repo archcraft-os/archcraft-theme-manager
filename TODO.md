@@ -3,7 +3,7 @@
 
 - [x] Make searchbar working
 
-- [ ] Add auto themes.json loader
+- [x] Add auto themes.json loader
 
 - [x] Add animation in screen switching
 
@@ -13,7 +13,6 @@
 
 - [x] Add check before applying theme
 
-- [ ] Make visible of type of online theme (openbox or bspwm)
+- [x] Make visible of type of online theme (openbox or bspwm)
 
-- [ ] Fix polybar crashing
-
+- [x] Fix polybar crashing

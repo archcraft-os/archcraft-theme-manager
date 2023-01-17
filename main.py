@@ -4,6 +4,8 @@ from kivy.config import Config
 Config.set("graphics", "height", "650")
 Config.set("graphics", "width", "380")
 Config.set("input", "%(name)s", "probesysfs,provider=hidinput")
+Config.set("kivy","exit_on_escape","0")
+
 from kivy.lang import Builder
 from kivymd.app import MDApp
 from kivymd.uix.anchorlayout import MDAnchorLayout
@@ -23,9 +25,6 @@ import json
 import os
 import _thread
 import configparser
-
-Loader.loading_image = "./assets/loading.png"
-
 
 class ThemeView(MDAnchorLayout):
     pass
@@ -77,7 +76,12 @@ class ThemeManager(MDApp):
         self.theme_cls.accent_hue = self.config["accent_hue"]
         self.theme_cls.heme_style_switch_animation = self.config["theme_style_switch_animation"]
         self.theme_cls.theme_style_switch_animation_duration = float(self.config["theme_style_switch_animation_duration"])
-        
+        self.theme_cls.custom_normal = self.theme_cls.bg_normal if self.config["bg_normal"].lower() == "none" else self.config["bg_normal"]
+        self.theme_cls.custom_light = self.theme_cls.bg_light if self.config["bg_light"].lower() == "none" else self.config["bg_light"]
+        self.theme_cls.custom_dark = self.theme_cls.bg_light if self.config["bg_dark"].lower() == "none" else self.config["bg_dark"]
+        self.theme_cls.custom_darkest = self.theme_cls.bg_light if self.config["bg_darkest"].lower() == "none" else self.config["bg_darkest"] 
+        Loader.loading_image = "./assets/loading.png" if self.config["loading_image"].lower() == "default" else self.config["loading_image"].lower()
+
     def build(self):
         self.name_linux = os.popen("whoami").read()[:-1]
         self.openbox_theme_dir = "/home/{}/.config/openbox-themes/themes/".format(
@@ -93,18 +97,15 @@ class ThemeManager(MDApp):
         self.apply_settings()
         _thread.start_new_thread(self.settings_updater,())
         self.theme_cls.material_style = "M3"
-        self.theme_cls.custom_normal = self.theme_cls.bg_normal #"#02002f"
-        self.theme_cls.custom_light = self.theme_cls.bg_light #"#0b135b"
         self.MainUI = Builder.load_file("main.kv")
         self.InstallView = Builder.load_file("modal_views/install_theme.kv")
         self.DynamicView = Builder.load_file("modal_views/dynamic_view.kv")
         from kivy.core.window import Window
-
         Window.size = [380, 650]
         return self.MainUI
 
     def on_start(self):
-        Clock.schedule_interval(self.load_themes_json,60)
+        Clock.schedule_interval(self.load_themes_json,float(self.config["update_time"]))
         self.load_local_themes_bspwm()
         self.load_local_themes_openbox()
         self.load_popular()
@@ -176,6 +177,7 @@ class ThemeManager(MDApp):
         Animation(opacity=0, d=0.2).start(self.root.ids.local_themes_bspwm)
         Clock.schedule_once(self.add_bspwm_local_theme_widget, 0.5)
         Clock.schedule_once(
+
             lambda arg: Animation(opacity=1, d=0.2).start(
                 self.root.ids.local_themes_bspwm
             ),
@@ -334,7 +336,7 @@ class ThemeManager(MDApp):
                     which("bash")
                     + " "
                     + self.openbox_theme_dir
-                    + f"/{theme}/apply.sh &"
+                    + f"/{theme}/apply.sh"
                 ),
                 ("", ""),
             )
@@ -348,7 +350,7 @@ class ThemeManager(MDApp):
         if os.path.exists(self.bspwm_theme_file[:-9] + f"/{theme}/apply.sh"):
             _thread.start_new_thread(
                 lambda x, y: os.system(
-                    which("bash") + " " + self.bspwm_theme_dir + f"/{theme}/apply.sh &"
+                    which("bash") + " " + self.bspwm_theme_dir + f"/{theme}/apply.sh"
                 ),
                 ("", ""),
             )
@@ -501,10 +503,11 @@ class ThemeManager(MDApp):
     def load_themes_json(self,arg):
         try:
             response = urlopen("https://raw.githubusercontent.com/archcraft-os/archcraft-theme-manager/main/themes.json")
-            #with open("themes.json","w") as file:
-                #text = response.read()
-                #file.write(str(text))
-            #file.close()
+            # Below lines are not working idk why?
+            #with open("themes.json","w") as theme_file:
+            #   text = response.read()
+            #   theme_file.write(str(text))
+            #file.close() 
         except Exception:
             return
 
