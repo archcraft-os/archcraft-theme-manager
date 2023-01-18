@@ -176,7 +176,7 @@ class ThemeManager(MDApp):
             )
             Widget.file_size = self.themes["Popular"][theme]["file_size"]
             Widget.download_url = self.themes["Popular"][theme]["downloadurl"]
-            if theme.lower() in self.get_all_openbox_themes():
+            if theme.lower() in self.get_all_openbox_themes()+self.get_all_bspwm_themes():
                 Widget.installed = True
             self.root.ids.online_theme_top.add_widget(Widget)
 
@@ -193,7 +193,7 @@ class ThemeManager(MDApp):
             )
             Widget.file_size = self.themes["Online"][theme]["file_size"]
             Widget.download_url = self.themes["Online"][theme]["downloadurl"]
-            if theme.lower() in self.get_all_openbox_themes():
+            if theme.lower() in self.get_all_openbox_themes()+self.get_all_bspwm_themes():
                 Widget.installed = True
             self.root.ids.online_theme_lower.add_widget(Widget)
 
