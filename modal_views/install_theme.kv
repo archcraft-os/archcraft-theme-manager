@@ -10,7 +10,8 @@ ModalView:
 			radius:dp(10)
 			font_name:app.regular_font
 	        ripple_scale:0
-            on_touch_down:app.install_theme(self.url,self.name)
+            on_touch_down:app.install_theme(self.url,self.name) if self.text == "Install" else app.send_notification("{} already installed")
+            disabled:True if self.text != "Install" else False
 		MDFlatButton:
 			md_bg_color:0,0,0,0
 			line_color:app.theme_cls.primary_color

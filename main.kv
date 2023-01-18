@@ -172,7 +172,7 @@ MDBottomNavigation:
             id:search_box
             size_hint:1,0.8
             radius:[0] * 4#[dp(20),dp(20),0,0]
-            md_bg_color:app.theme_cls.bg_dark
+            md_bg_color:app.theme_cls.custom_dark
             pos_hint:{"center_y":-1}
             RecycleView:
                 id:search_view
@@ -200,6 +200,9 @@ MDBottomNavigation:
             font_name:app.medium_font
             allow_stretch:True
             tab_indicator_anim:True
+            tab_indicator_height:dp(4) 
+            #tab_indicator_type:"fill"
+            tab_hint_x:True
             Tab:
                 title:"Openbox"
                 AnchorLayout:

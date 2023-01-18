@@ -17,6 +17,6 @@
 
 - [x] Fix polybar crashing
 
-- [ ] check if theme already installed and do not reinstall
+- [x] check if theme already installed and do not reinstall
 
 - [ ] write theme making guied

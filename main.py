@@ -4,7 +4,7 @@ from kivy.config import Config
 Config.set("graphics", "height", "650")
 Config.set("graphics", "width", "380")
 Config.set("input", "%(name)s", "probesysfs,provider=hidinput")
-Config.set("kivy","exit_on_escape","0")
+Config.set("kivy", "exit_on_escape", "0")
 
 from kivy.lang import Builder
 from kivymd.app import MDApp
@@ -18,6 +18,7 @@ from kivy.metrics import dp
 from kivy.clock import Clock
 from kivy.loader import Loader
 from kivy.core.window import Window
+from kivy.uix.boxlayout import BoxLayout
 from shutil import which
 from urllib.request import urlopen
 import time
@@ -25,6 +26,7 @@ import json
 import os
 import _thread
 import configparser
+
 
 class ThemeView(MDAnchorLayout):
     pass
@@ -46,9 +48,9 @@ class ThemeManager(MDApp):
 
     def parse_settings(self) -> dict:
         config = configparser.ConfigParser()
-        config.read('config.ini')
+        config.read("config.ini")
         return config["archcraft-theme-manager"]
-    
+
     def settings_updater(self):
         while True:
             time.sleep(0.5)
@@ -74,13 +76,37 @@ class ThemeManager(MDApp):
         self.theme_cls.accent_palette = self.config["accent_palette"]
         self.theme_cls.primary_hue = self.config["primary_hue"]
         self.theme_cls.accent_hue = self.config["accent_hue"]
-        self.theme_cls.heme_style_switch_animation = self.config["theme_style_switch_animation"]
-        self.theme_cls.theme_style_switch_animation_duration = float(self.config["theme_style_switch_animation_duration"])
-        self.theme_cls.custom_normal = self.theme_cls.bg_normal if self.config["bg_normal"].lower() == "none" else self.config["bg_normal"]
-        self.theme_cls.custom_light = self.theme_cls.bg_light if self.config["bg_light"].lower() == "none" else self.config["bg_light"]
-        self.theme_cls.custom_dark = self.theme_cls.bg_light if self.config["bg_dark"].lower() == "none" else self.config["bg_dark"]
-        self.theme_cls.custom_darkest = self.theme_cls.bg_light if self.config["bg_darkest"].lower() == "none" else self.config["bg_darkest"] 
-        Loader.loading_image = "./assets/loading.png" if self.config["loading_image"].lower() == "default" else self.config["loading_image"].lower()
+        self.theme_cls.heme_style_switch_animation = self.config[
+            "theme_style_switch_animation"
+        ]
+        self.theme_cls.theme_style_switch_animation_duration = float(
+            self.config["theme_style_switch_animation_duration"]
+        )
+        self.theme_cls.custom_normal = (
+            self.theme_cls.bg_normal
+            if self.config["bg_normal"].lower() == "none"
+            else self.config["bg_normal"]
+        )
+        self.theme_cls.custom_light = (
+            self.theme_cls.bg_light
+            if self.config["bg_light"].lower() == "none"
+            else self.config["bg_light"]
+        )
+        self.theme_cls.custom_dark = (
+            self.theme_cls.bg_light
+            if self.config["bg_dark"].lower() == "none"
+            else self.config["bg_dark"]
+        )
+        self.theme_cls.custom_darkest = (
+            self.theme_cls.bg_light
+            if self.config["bg_darkest"].lower() == "none"
+            else self.config["bg_darkest"]
+        )
+        Loader.loading_image = (
+            "./assets/loading.png"
+            if self.config["loading_image"].lower() == "default"
+            else self.config["loading_image"].lower()
+        )
 
     def build(self):
         self.name_linux = os.popen("whoami").read()[:-1]
@@ -93,19 +119,22 @@ class ThemeManager(MDApp):
         self.bspwm_theme_dir = "/home/{}/.config/bspwm/themes/".format(self.name_linux)
         self.bspwm_theme_file = "/home/{}/.config/bspwm/themes/.current".format(
             self.name_linux
-            )
+        )
         self.apply_settings()
-        _thread.start_new_thread(self.settings_updater,())
+        _thread.start_new_thread(self.settings_updater, ())
         self.theme_cls.material_style = "M3"
         self.MainUI = Builder.load_file("main.kv")
         self.InstallView = Builder.load_file("modal_views/install_theme.kv")
         self.DynamicView = Builder.load_file("modal_views/dynamic_view.kv")
         from kivy.core.window import Window
+
         Window.size = [380, 650]
         return self.MainUI
 
     def on_start(self):
-        Clock.schedule_interval(self.load_themes_json,float(self.config["update_time"]))
+        Clock.schedule_interval(
+            self.load_themes_json, float(self.config["update_time"])
+        )
         self.load_local_themes_bspwm()
         self.load_local_themes_openbox()
         self.load_popular()
@@ -117,7 +146,7 @@ class ThemeManager(MDApp):
             lambda arg: self.root.ids.openbox_scrollview.refresh_done(), 2
         )
 
-    def refresh_offline_bspwm(self, *largs):
+    def refresh_offline_bspwm(sef, *largs):
         self.load_local_themes_bspwm()
         Clock.schedule_once(
             lambda arg: self.root.ids.bspwm_scrollview.refresh_done(), 2
@@ -129,6 +158,12 @@ class ThemeManager(MDApp):
         Clock.schedule_once(
             lambda arg: self.root.ids.refresh_layout_online.refresh_done(), 2
         )
+
+    def space_widget(self, size_y):
+        Widget = BoxLayout()
+        Widget.size_hint = [None, None]
+        Widget.size = [dp(50), size_y]
+        return Widget
 
     def load_popular(self):
         if len(self.root.ids.online_theme_top.children) > 4:
@@ -177,7 +212,6 @@ class ThemeManager(MDApp):
         Animation(opacity=0, d=0.2).start(self.root.ids.local_themes_bspwm)
         Clock.schedule_once(self.add_bspwm_local_theme_widget, 0.5)
         Clock.schedule_once(
-
             lambda arg: Animation(opacity=1, d=0.2).start(
                 self.root.ids.local_themes_bspwm
             ),
@@ -209,6 +243,7 @@ class ThemeManager(MDApp):
         CurrentWidget.children[0].line_color = self.theme_cls.accent_color
         CurrentWidget.children[0].line_width = dp(2)
         CurrentWidget.ids.is_current.opacity = 1
+        self.root.ids.local_themes.add_widget(self.space_widget(dp(30)))
         self.root.ids.local_themes.add_widget(CurrentWidget)
         self.root.ids.openbox_scrollview.scroll_to(CurrentWidget)
 
@@ -232,15 +267,14 @@ class ThemeManager(MDApp):
                 current_theme
             )
         else:
-            CurrentWidget.source = (
-                self.bspwm_theme_dir + f"{current_theme}/preview.png"
-            )
+            CurrentWidget.source = self.bspwm_theme_dir + f"{current_theme}/preview.png"
         CurrentWidget.text = current_theme.capitalize()
         CurrentWidget.children[0].style = "outlined"
         CurrentWidget.children[0].line_color = self.theme_cls.accent_color
         CurrentWidget.children[0].line_width = dp(2)
         CurrentWidget.ids.is_current.opacity = 1
         CurrentWidget.type = "bspwm"
+        self.root.ids.local_themes_bspwm.add_widget(self.space_widget(dp(30)))
         self.root.ids.local_themes_bspwm.add_widget(CurrentWidget)
         self.root.ids.bspwm_scrollview.scroll_to(CurrentWidget)
 
@@ -261,6 +295,12 @@ class ThemeManager(MDApp):
         self.InstallView.ids.image.source = root.source
         self.InstallView.ids.install_button.url = root.download_url
         self.InstallView.ids.install_button.name = root.text.split(" by ")[0]
+        self.InstallView.ids.install_button.text = (
+            "Installed"
+            if root.text.split(" by ")[0].lower()
+            in self.get_all_bspwm_themes() + self.get_all_openbox_themes()
+            else "Install"
+        )
         self.InstallView.open()
 
     def open_search_box(self):
@@ -333,7 +373,9 @@ class ThemeManager(MDApp):
         if os.path.exists(self.openbox_theme_file[:-9] + f"/{theme}/apply.sh"):
             _thread.start_new_thread(
                 lambda x, y: os.system(
-                    which("bash")
+                    which("nohup")
+                    + " "
+                    + which("bash")
                     + " "
                     + self.openbox_theme_dir
                     + f"/{theme}/apply.sh"
@@ -350,7 +392,12 @@ class ThemeManager(MDApp):
         if os.path.exists(self.bspwm_theme_file[:-9] + f"/{theme}/apply.sh"):
             _thread.start_new_thread(
                 lambda x, y: os.system(
-                    which("bash") + " " + self.bspwm_theme_dir + f"/{theme}/apply.sh"
+                    which("nohup")
+                    + " "
+                    + which("bash")
+                    + " "
+                    + self.bspwm_theme_dir
+                    + f"/{theme}/apply.sh"
                 ),
                 ("", ""),
             )
@@ -412,12 +459,11 @@ class ThemeManager(MDApp):
                 snackbar_x="10dp",
                 snackbar_y="100dp",
                 shadow_softness=20,
-                size_hint_x=(
-                    Window.width - (dp(10) * 2)
-                ) / Window.width
+                size_hint_x=(Window.width - (dp(10) * 2)) / Window.width,
             )
             bar.font_name = self.regular_font
             bar.open()
+
         Clock.schedule_once(construct_bar)
 
     def download_file(self, url):
@@ -500,18 +546,26 @@ class ThemeManager(MDApp):
         self.theme_name = name
         _thread.start_new_thread(lambda x, y: self.download_file(url), ("", ""))
 
-    def load_themes_json(self,arg):
+    def load_themes_json(self, arg):
         try:
-            response = urlopen("https://raw.githubusercontent.com/archcraft-os/archcraft-theme-manager/main/themes.json")
+            response = urlopen(
+                "https://raw.githubusercontent.com/archcraft-os/archcraft-theme-manager/main/themes.json"
+            )
             # Below lines are not working idk why?
-            #with open("themes.json","w") as theme_file:
+            # with open("themes.json","w") as theme_file:
             #   text = response.read()
             #   theme_file.write(str(text))
-            #file.close() 
+            # file.close()
         except Exception:
             return
 
+
 if which("wget") == None:
     raise FileNotFoundError("Wget is not installed on your system, install it")
+
+if os.path.isfile("/etc/os-release"):
+    with open("/etc/os-release", "r") as file:
+        if file.read().split("\n")[0].split('="')[-1][:-1] != "Archcraft":
+            raise OSError("System is not Archcraft")
 
 ThemeManager().run()
