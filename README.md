@@ -1,5 +1,5 @@
 <p align="center">
-<a href="https://archcraft.io"><img src="https://user-images.githubusercontent.com/68729523/213453334-380bea4e-1cad-45d5-b022-73640faf3eed.png" height="600" width="1000" alt="Archcraft"></a>
+<a href="https://archcraft.io"><img src="https://user-images.githubusercontent.com/68729523/213453334-380bea4e-1cad-45d5-b022-73640faf3eed.png" alt="Archcraft"></a>
 </p>
 
 <p align="center">
