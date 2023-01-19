@@ -1,4 +1,5 @@
 #!/usr/bin/python3
+import kivy
 from kivy.config import Config
 
 Config.set("graphics", "height", "650")
@@ -42,13 +43,17 @@ class Tab(MDFloatLayout, MDTabsBase):
 
 class ThemeManager(MDApp):
 
-    themes = json.load(open("themes.json", "r"))
+    themes = json.load(open("../themes.json", "r"))
     icon = "logo.png"
     title = "Archcraft Theme Manager"
 
     def parse_settings(self) -> dict:
         config = configparser.ConfigParser()
-        config.read("config.ini")
+        try:
+            config.read(self.config_file if os.path.isfile(self.config_file) else "config.ini")
+        except Exception:
+            kivy.logger.Logger.error("archcraft-theme-manager : unable to read config file")
+            exit(1)
         return config["archcraft-theme-manager"]
 
     def settings_updater(self):
@@ -120,6 +125,10 @@ class ThemeManager(MDApp):
         self.bspwm_theme_file = "/home/{}/.config/bspwm/themes/.current".format(
             self.name_linux
         )
+        self.config_file = "/home/{}/.config/archcraft-theme-manager/config.ini".format(self.name_linux)
+        if os.path.isfile(self.config_file) == False:
+            kivy.logger.Logger.warning("archcraft-theme-manager : not found {}".format(self.config_file))
+            kivy.logger.Logger.warning("archcraft-theme-manager : Reading default config file")
         self.apply_settings()
         _thread.start_new_thread(self.settings_updater, ())
         self.theme_cls.material_style = "M3"
@@ -245,7 +254,7 @@ class ThemeManager(MDApp):
         CurrentWidget.ids.is_current.opacity = 1
         self.root.ids.local_themes.add_widget(self.space_widget(dp(30)))
         self.root.ids.local_themes.add_widget(CurrentWidget)
-        self.root.ids.openbox_scrollview.scroll_to(CurrentWidget)
+        self.root.ids.openbox_scrollview.scroll_to(self.root.ids.local_themes.children[-1])
 
         for theme in all_themes:
             TestWidget = ThemeView()
@@ -276,7 +285,7 @@ class ThemeManager(MDApp):
         CurrentWidget.type = "bspwm"
         self.root.ids.local_themes_bspwm.add_widget(self.space_widget(dp(30)))
         self.root.ids.local_themes_bspwm.add_widget(CurrentWidget)
-        self.root.ids.bspwm_scrollview.scroll_to(CurrentWidget)
+        self.root.ids.bspwm_scrollview.scroll_to(self.root.ids.local_themes_bspwm.children[-1])
 
         for theme in all_themes:
             TestWidget = ThemeView()
@@ -552,7 +561,7 @@ class ThemeManager(MDApp):
                 "https://raw.githubusercontent.com/archcraft-os/archcraft-theme-manager/main/themes.json"
             )
             # Below lines are not working idk why?
-            # with open("themes.json","w") as theme_file:
+            # with open("../themes.json","w") as theme_file:
             #   text = response.read()
             #   theme_file.write(str(text))
             # file.close()

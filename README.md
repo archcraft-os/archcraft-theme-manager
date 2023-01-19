@@ -16,7 +16,7 @@ First, you must install `kivy` with:
 ```
 sudo pacman -S python-kivy
 ```
-Then, clone the repository and run `main.py` with python. That's it!
+Then, clone the repository and run `./archcraft-theme-manager/archcraft-theme-manager`. That's it!
  
 Some screenshots of initial release:
 
