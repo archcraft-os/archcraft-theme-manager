@@ -1,3 +1,4 @@
+#: import Window kivy.core.window.Window
 ModalView:
 	background_color:0,0,0,0.4
 	RelativeLayout:
@@ -6,7 +7,7 @@ ModalView:
 			md_bg_color:app.theme_cls.primary_color
 			text:"Install"	
 			size_hint:0.3,0.07
-			pos_hint:{"center_x":0.7,"center_y":0.2}
+			pos_hint:{"center_x":0.7,"center_y":0.15}
 			radius:dp(10)
 			font_name:app.regular_font
 	        ripple_scale:0
@@ -17,7 +18,7 @@ ModalView:
 			line_color:app.theme_cls.primary_color
 			text:"Cancel" 
 			size_hint:0.3,0.07
-			pos_hint:{"center_x":0.3,"center_y":0.2}
+			pos_hint:{"center_x":0.3,"center_y":0.15}
 			radius:dp(10)
 			font_name:app.regular_font
 			line_width:dp(1)
@@ -26,27 +27,45 @@ ModalView:
         AsyncImage:
             id:image
             size_hint:1,0.5
-            pos_hint:{"center_y":0.7}
-        MDLabel:
-			id:theme_name
-			text:"Dark"
-			font_name:app.bold_font
-			font_size:"25sp"
-			halign:"center"
-			pos_hint:{"center_x":0.5,"center_y":0.4}
-		MDLabel:
-			id:dev_name
-			text:"by Ansh Dadwal"
-			font_name:app.regular_font
-			font_size:"20sp"
-			halign:"center"
-			pos_hint:{"center_x":0.5,"center_y":0.35}
-		MDLabel:
-			id:file_size
-			text:"20mb"
-			font_name:app.medium_font
-			font_size:"20sp"
-			halign:"center"
-			pos_hint:{"center_x":0.85,"center_y":0.4}
-
+            pos_hint:{"top":1}
+        ScrollView:
+            pos_hint:{"center_y":0.35}
+            size_hint:1,0.3
+            MDBoxLayout:
+                adaptive_height:True
+                orientation:"vertical"
+                padding:dp(20)
+                spacing:dp(10)
+                MDLabel:
+                    markup:True
+			        id:theme_name
+                    size_hint:None,None
+                    size:Window.size[0],dp(20)
+			        text:"Dark"
+			        font_name:app.bold_font
+			        font_size:"25sp"
+		        MDLabel:
+                    markup:True
+                    id:dev_name
+			        text:"by Ansh Dadwal"
+			        font_name:app.medium_font
+			        font_size:"15sp"
+                    size_hint:None,None
+                    size:Window.size[0],dp(20)
+			    MDLabel:
+                    markup:True
+			        id:file_size
+			        text:"20mb"
+			        font_name:app.medium_font
+			        font_size:"15sp"
+                    size_hint:None,None
+                    size:Window.size[0],dp(20)
+			    MDLabel:
+                    markup:True
+			        id:theme_wm
+			        text:"Openbox"
+			        font_name:app.medium_font
+			        font_size:"15sp"
+                    size_hint:None,None
+                    size:Window.size[0],dp(20)
 

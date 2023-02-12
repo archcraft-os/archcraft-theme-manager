@@ -186,6 +186,7 @@ class ThemeManager(MDApp):
             )
             Widget.file_size = self.themes["Popular"][theme]["file_size"]
             Widget.download_url = self.themes["Popular"][theme]["downloadurl"]
+            Widget.wm = self.themes["Popular"][theme]["wm"]
             if theme.lower() in self.get_all_openbox_themes()+self.get_all_bspwm_themes():
                 Widget.installed = True
             self.root.ids.online_theme_top.add_widget(Widget)
@@ -203,6 +204,7 @@ class ThemeManager(MDApp):
             )
             Widget.file_size = self.themes["Online"][theme]["file_size"]
             Widget.download_url = self.themes["Online"][theme]["downloadurl"]
+            Widget.wm = self.themes["Online"][theme]["wm"]
             if theme.lower() in self.get_all_openbox_themes()+self.get_all_bspwm_themes():
                 Widget.installed = True
             self.root.ids.online_theme_lower.add_widget(Widget)
@@ -299,9 +301,10 @@ class ThemeManager(MDApp):
             self.root.ids.local_themes_bspwm.add_widget(TestWidget)
 
     def open_theme_installer(self, root):
-        self.InstallView.ids.theme_name.text = root.text.split(" by ")[0]
-        self.InstallView.ids.dev_name.text = root.text.split(" by ")[-1]
-        self.InstallView.ids.file_size.text = root.file_size
+        self.InstallView.ids.theme_name.text = f"[font={self.regular_font}]Name : [/font]"+root.text.split(" by ")[0]
+        self.InstallView.ids.dev_name.text = f"[font={self.regular_font}]Creator : [/font]"+root.text.split(" by ")[-1]
+        self.InstallView.ids.file_size.text = f"[font={self.regular_font}]Size : [/font]"+root.file_size
+        self.InstallView.ids.theme_wm.text = f"[font={self.regular_font}]WM : [/font]"+root.wm
         self.InstallView.ids.image.source = root.source
         self.InstallView.ids.install_button.url = root.download_url
         self.InstallView.ids.install_button.name = root.text.split(" by ")[0]
@@ -354,6 +357,9 @@ class ThemeManager(MDApp):
                     "download_url": self.themes["Online"][theme_name]["downloadurl"]
                     if theme_name in self.themes["Online"].keys()
                     else self.themes["Popular"][theme_name]["downloadurl"],
+                    "wm": self.themes["Online"][theme_name]["wm"]
+                    if theme_name in self.themes["Online"].keys()
+                    else self.themes["Popular"][theme_name]["wm"],
                 }
             )
 
