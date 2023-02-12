@@ -224,7 +224,7 @@ from typing import Union
 
 from kivy.animation import Animation
 from kivy.clock import Clock
-from kivy.graphics import Color, Rectangle
+from kivy.graphics import Color, RoundedRectangle
 from kivy.lang import Builder
 from kivy.metrics import sp
 from kivy.properties import (
@@ -416,7 +416,7 @@ class MDLabel(DeclarativeBehavior, ThemableBehavior, Label, MDAdaptiveWidget):
         self.canvas.remove_group("Background_instruction")
         with self.canvas.before:
             Color(rgba=color)
-            self.canvas_bg = Rectangle(pos=self.pos, size=self.size)
+            self.canvas_bg = RoundedRectangle(pos=self.pos, size=self.size,radius=dp[0,dp(20),dp(20),0])
             self.bind(pos=self.update_canvas_bg_pos)
 
     def on_size(self, instance_label, size: list) -> None:

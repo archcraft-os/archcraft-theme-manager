@@ -1,0 +1,7 @@
+Obt-Message: Failed to open an Input Method
+WARNING: No locale support
+Obt-Message: Failed to open an Input Method
+WARNING: No locale support
+polybar|error: X connection error, terminating... (what: Socket, pipe or stream error)
+X connection to :0 broken (explicit kill or server shutdown).
+polybar|error: module/mpd: Connection reset by peer

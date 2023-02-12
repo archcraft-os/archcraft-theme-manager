@@ -6,6 +6,7 @@ Config.set("graphics", "height", "650")
 Config.set("graphics", "width", "380")
 Config.set("input", "%(name)s", "probesysfs,provider=hidinput")
 Config.set("kivy", "exit_on_escape", "0")
+Config.set("kivy","pause_on_minimize","0")
 
 from kivy.lang import Builder
 from kivymd.app import MDApp

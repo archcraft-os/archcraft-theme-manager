@@ -110,10 +110,10 @@ MDBottomNavigation:
         M_CardTextField:
             text:""
             hint_text:"Search Themes"
-            size_hint_x:0.95
+            size_hint_x:0.85
             pos_hint:{"center_x":0.5,"center_y":0.85}
             icon_left:"magnify"
-            radius:[dp(5) for i in range(4)]
+            radius:[dp(15) for i in range(4)]
             font_name:app.medium_font
             on_focus:app.open_search_box()
             on_text:Clock.schedule_once(lambda arg :app.handle_search(text=self.text,search=True))
