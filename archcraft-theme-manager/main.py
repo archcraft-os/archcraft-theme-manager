@@ -166,7 +166,7 @@ class ThemeManager(MDApp):
             lambda arg: self.root.ids.openbox_scrollview.refresh_done(), 2
         )
 
-    def refresh_offline_bspwm(sef, *largs):
+    def refresh_offline_bspwm(self, *largs):
         self.load_local_themes_bspwm()
         Clock.schedule_once(
             lambda arg: self.root.ids.bspwm_scrollview.refresh_done(), 2
