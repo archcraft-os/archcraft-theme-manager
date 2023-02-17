@@ -13,7 +13,7 @@
 
 - [x] Add check before applying theme
 
-- [ ] Make visible of type of online theme (openbox or bspwm)
+- [x] Make visible of type of online theme (openbox or bspwm)
 
 - [x] Fix polybar crashing
 

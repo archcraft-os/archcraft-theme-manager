@@ -4,19 +4,22 @@
             "thumbnail":"https://cdn.discordapp.com/attachments/1059398371107950702/1060164497077186601/Screenshot_2023-01-04_115320.png",
             "downloadurl":"https://github.com/benjibrown/ricing/blob/main/decay-ob-theme.tar.gz?raw=true",
             "maker":"Lamp",
-            "file_size":"2.01 MB"
+            "file_size":"2.01 MB",
+            "wm":"Openbox"
        },
         "Dracula":{
             "thumbnail":"https://cdn.discordapp.com/attachments/1059398371107950702/1059536128547491910/image.png",
             "downloadurl":"https://cdn.discordapp.com/attachments/1059398371107950702/1061273212337524856/dracula-ob-theme.tar.gz",
             "maker":"Lamp",
-            "file_size":"539 KB"
+            "file_size":"539 KB",
+            "wm":"Openbox"
         },
         "Purpil":{
             "thumbnail":"https://cdn.discordapp.com/attachments/1059398371107950702/1060891562139201576/preview.png",
             "downloadurl":"https://cdn.discordapp.com/attachments/1059398371107950702/1061277184930619392/purpil-ob-theme.tar.gz",
             "maker":"Lamp",
-            "file_size": "5.79 MB"
+            "file_size": "5.79 MB",
+            "wm":"Openbox"
         }
     },
 
@@ -25,13 +28,15 @@
             "thumbnail":"https://user-images.githubusercontent.com/68729523/213179201-7e90359c-b455-4bd3-83d9-f053e46e8806.png",
             "downloadurl":"https://cdn.discordapp.com/attachments/1059398371107950702/1065256245314986015/minimal-ob-theme.tar.gz",
             "maker":"T-Dynamos",
-            "file_size":"1.96 MB"
+            "file_size":"1.96 MB",
+            "wm":"Openbox"
         },
         "Catppuccin":{
             "thumbnail":"https://cdn.discordapp.com/attachments/1059398371107950702/1059805404772700230/Screenshot_2023-01-03_120728.png",
             "downloadurl":"https://github.com/benjibrown/ricing/raw/main/catppuccin-ob-theme.tar.gz",
             "maker":"Lamp",
-            "file_size":"17.42 MB"
+            "file_size":"17.42 MB",
+            "wm":"Openbox"
             
         }
     }

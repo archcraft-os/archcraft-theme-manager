@@ -6,7 +6,7 @@ Config.set("graphics", "height", "650")
 Config.set("graphics", "width", "380")
 Config.set("input", "%(name)s", "probesysfs,provider=hidinput")
 Config.set("kivy", "exit_on_escape", "0")
-Config.set("kivy","pause_on_minimize","0")
+Config.set("kivy", "pause_on_minimize", "0")
 
 from kivy.lang import Builder
 from kivymd.app import MDApp
@@ -51,9 +51,13 @@ class ThemeManager(MDApp):
     def parse_settings(self) -> dict:
         config = configparser.ConfigParser()
         try:
-            config.read(self.config_file if os.path.isfile(self.config_file) else "config.ini")
+            config.read(
+                self.config_file if os.path.isfile(self.config_file) else "config.ini"
+            )
         except Exception:
-            kivy.logger.Logger.error("archcraft-theme-manager : unable to read config file")
+            kivy.logger.Logger.error(
+                "archcraft-theme-manager : unable to read config file"
+            )
             exit(1)
         return config["archcraft-theme-manager"]
 
@@ -126,10 +130,16 @@ class ThemeManager(MDApp):
         self.bspwm_theme_file = "/home/{}/.config/bspwm/themes/.current".format(
             self.name_linux
         )
-        self.config_file = "/home/{}/.config/archcraft-theme-manager/config.ini".format(self.name_linux)
+        self.config_file = "/home/{}/.config/archcraft-theme-manager/config.ini".format(
+            self.name_linux
+        )
         if os.path.isfile(self.config_file) == False:
-            kivy.logger.Logger.warning("archcraft-theme-manager : not found {}".format(self.config_file))
-            kivy.logger.Logger.warning("archcraft-theme-manager : Reading default config file")
+            kivy.logger.Logger.warning(
+                "archcraft-theme-manager : not found {}".format(self.config_file)
+            )
+            kivy.logger.Logger.warning(
+                "archcraft-theme-manager : Reading default config file"
+            )
         self.apply_settings()
         _thread.start_new_thread(self.settings_updater, ())
         self.theme_cls.material_style = "M3"
@@ -187,7 +197,10 @@ class ThemeManager(MDApp):
             Widget.file_size = self.themes["Popular"][theme]["file_size"]
             Widget.download_url = self.themes["Popular"][theme]["downloadurl"]
             Widget.wm = self.themes["Popular"][theme]["wm"]
-            if theme.lower() in self.get_all_openbox_themes()+self.get_all_bspwm_themes():
+            if (
+                theme.lower()
+                in self.get_all_openbox_themes() + self.get_all_bspwm_themes()
+            ):
                 Widget.installed = True
             self.root.ids.online_theme_top.add_widget(Widget)
 
@@ -205,7 +218,10 @@ class ThemeManager(MDApp):
             Widget.file_size = self.themes["Online"][theme]["file_size"]
             Widget.download_url = self.themes["Online"][theme]["downloadurl"]
             Widget.wm = self.themes["Online"][theme]["wm"]
-            if theme.lower() in self.get_all_openbox_themes()+self.get_all_bspwm_themes():
+            if (
+                theme.lower()
+                in self.get_all_openbox_themes() + self.get_all_bspwm_themes()
+            ):
                 Widget.installed = True
             self.root.ids.online_theme_lower.add_widget(Widget)
 
@@ -257,7 +273,9 @@ class ThemeManager(MDApp):
         CurrentWidget.ids.is_current.opacity = 1
         self.root.ids.local_themes.add_widget(self.space_widget(dp(30)))
         self.root.ids.local_themes.add_widget(CurrentWidget)
-        self.root.ids.openbox_scrollview.scroll_to(self.root.ids.local_themes.children[-1])
+        self.root.ids.openbox_scrollview.scroll_to(
+            self.root.ids.local_themes.children[-1]
+        )
 
         for theme in all_themes:
             TestWidget = ThemeView()
@@ -288,7 +306,9 @@ class ThemeManager(MDApp):
         CurrentWidget.type = "bspwm"
         self.root.ids.local_themes_bspwm.add_widget(self.space_widget(dp(30)))
         self.root.ids.local_themes_bspwm.add_widget(CurrentWidget)
-        self.root.ids.bspwm_scrollview.scroll_to(self.root.ids.local_themes_bspwm.children[-1])
+        self.root.ids.bspwm_scrollview.scroll_to(
+            self.root.ids.local_themes_bspwm.children[-1]
+        )
 
         for theme in all_themes:
             TestWidget = ThemeView()
@@ -301,10 +321,18 @@ class ThemeManager(MDApp):
             self.root.ids.local_themes_bspwm.add_widget(TestWidget)
 
     def open_theme_installer(self, root):
-        self.InstallView.ids.theme_name.text = f"[font={self.regular_font}]Name : [/font]"+root.text.split(" by ")[0]
-        self.InstallView.ids.dev_name.text = f"[font={self.regular_font}]Creator : [/font]"+root.text.split(" by ")[-1]
-        self.InstallView.ids.file_size.text = f"[font={self.regular_font}]Size : [/font]"+root.file_size
-        self.InstallView.ids.theme_wm.text = f"[font={self.regular_font}]WM : [/font]"+root.wm
+        self.InstallView.ids.theme_name.text = (
+            f"[font={self.regular_font}]Name : [/font]" + root.text.split(" by ")[0]
+        )
+        self.InstallView.ids.dev_name.text = (
+            f"[font={self.regular_font}]Creator : [/font]" + root.text.split(" by ")[-1]
+        )
+        self.InstallView.ids.file_size.text = (
+            f"[font={self.regular_font}]Size : [/font]" + root.file_size
+        )
+        self.InstallView.ids.theme_wm.text = (
+            f"[font={self.regular_font}]WM : [/font]" + root.wm
+        )
         self.InstallView.ids.image.source = root.source
         self.InstallView.ids.install_button.url = root.download_url
         self.InstallView.ids.install_button.name = root.text.split(" by ")[0]
